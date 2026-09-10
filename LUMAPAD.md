@@ -6,8 +6,9 @@ Sunshine host; no LumaPad-specific Windows service is required.
 
 ## MVP controls
 
-- Left virtual stick: WASD, switchable to arrow keys.
-- Right virtual stick: velocity-based relative mouse movement.
+- Left virtual stick: four independently bindable keyboard directions (WASD by default).
+- Right virtual stick: velocity-based relative mouse movement with adjustable sensitivity and
+  optional horizontal/vertical axis inversion.
 - Uncovered video area: Moonlight's normal relative mouse trackpad.
 - Round buttons: addable, removable, and bindable to one input or a multi-key combination of
   mouse buttons, 0-9, A-Z, F1-F12, arrows, and common modifier keys.
@@ -17,8 +18,8 @@ Sunshine host; no LumaPad-specific Windows service is required.
 Enable **Settings > On-screen Controls > Show on-screen controls**, then select
 **Keyboard + mouse (mixed sticks)**. During streaming, tap the gear repeatedly to cycle through
 move, resize, binding, and active modes. In binding mode, tap a round button to select one or more
-inputs, or delete it. Tap the visible **+** button to create a new virtual button. The left stick
-can also be tapped in binding mode to switch between WASD and arrow keys.
+inputs, or delete it. Tap either stick to edit or delete it. The **+** menu can create a virtual
+button and restore a deleted keyboard or mouse stick.
 
 The default mapping is aimed at action RPGs such as Path of Exile: mouse buttons, Q/W/E/R, and
 1-5 are immediately available, while the left stick provides WASD movement for games that support

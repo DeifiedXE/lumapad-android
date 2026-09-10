@@ -4,6 +4,7 @@
 
 package com.limelight.binding.input.virtual_controller;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -128,9 +129,9 @@ public class VirtualController {
         buttonAdd.setAlpha(0.55f);
         buttonAdd.setFocusable(false);
         buttonAdd.setText("+");
-        buttonAdd.setContentDescription(context.getString(R.string.osc_add_button));
+        buttonAdd.setContentDescription(context.getString(R.string.osc_add_control));
         buttonAdd.setVisibility(View.GONE);
-        buttonAdd.setOnClickListener(v -> addMappedButton());
+        buttonAdd.setOnClickListener(v -> showAddControlDialog());
 
     }
 
@@ -258,6 +259,21 @@ public class VirtualController {
         }
     }
 
+    void removeKeyboardMouseSticks() {
+        List<VirtualControllerElement> sticks = new ArrayList<>();
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof KeyboardAnalogStick || element instanceof MouseAnalogStick) {
+                sticks.add(element);
+            }
+        }
+
+        for (VirtualControllerElement element : sticks) {
+            element.releaseInput();
+            frame_layout.removeView(element);
+            elements.remove(element);
+        }
+    }
+
     void removeMappedButton(MappedInputButton button) {
         if (!elements.remove(button)) {
             return;
@@ -267,6 +283,64 @@ public class VirtualController {
         frame_layout.removeView(button);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         Toast.makeText(context, R.string.osc_button_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    void removeVirtualStick(VirtualControllerElement stick) {
+        if (!(stick instanceof KeyboardAnalogStick || stick instanceof MouseAnalogStick) ||
+                !elements.remove(stick)) {
+            return;
+        }
+
+        stick.releaseInput();
+        frame_layout.removeView(stick);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_stick_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean hasElement(int elementId) {
+        for (VirtualControllerElement element : elements) {
+            if (element.elementId == elementId) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void showAddControlDialog() {
+        if (!isKeyboardMouseMode()) {
+            return;
+        }
+
+        List<CharSequence> choices = new ArrayList<>();
+        List<Integer> choiceTypes = new ArrayList<>();
+        choices.add(context.getString(R.string.osc_add_mapped_button));
+        choiceTypes.add(0);
+        if (!hasElement(VirtualControllerElement.EID_KEYBOARD_LS)) {
+            choices.add(context.getString(R.string.osc_add_keyboard_stick));
+            choiceTypes.add(1);
+        }
+        if (!hasElement(VirtualControllerElement.EID_MOUSE_RS)) {
+            choices.add(context.getString(R.string.osc_add_mouse_stick));
+            choiceTypes.add(2);
+        }
+
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.osc_add_control)
+                .setItems(choices.toArray(new CharSequence[0]), (dialog, which) -> {
+                    switch (choiceTypes.get(which)) {
+                        case 1:
+                            addKeyboardStick();
+                            break;
+                        case 2:
+                            addMouseStick();
+                            break;
+                        default:
+                            addMappedButton();
+                            break;
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 
     private void addMappedButton() {
@@ -294,6 +368,37 @@ public class VirtualController {
         addElement(button, x, y, buttonSize, buttonSize);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         button.showBindingDialog();
+    }
+
+    private void addKeyboardStick() {
+        if (hasElement(VirtualControllerElement.EID_KEYBOARD_LS)) {
+            return;
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int stickSize = (int) (screen.heightPixels * 0.44f);
+        KeyboardAnalogStick stick = new KeyboardAnalogStick(this, context,
+                VirtualControllerElement.EID_KEYBOARD_LS);
+        addElement(stick, (int) (screen.heightPixels * 0.04f),
+                (int) (screen.heightPixels * 0.48f), stickSize, stickSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        stick.showBindingDialog();
+    }
+
+    private void addMouseStick() {
+        if (hasElement(VirtualControllerElement.EID_MOUSE_RS)) {
+            return;
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int stickSize = (int) (screen.heightPixels * 0.43f);
+        int x = screen.widthPixels - stickSize - (int) (screen.heightPixels * 0.06f);
+        MouseAnalogStick stick = new MouseAnalogStick(this, context,
+                VirtualControllerElement.EID_MOUSE_RS);
+        addElement(stick, Math.max(0, x), (int) (screen.heightPixels * 0.49f),
+                stickSize, stickSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        stick.showBindingDialog();
     }
 
     private void updateAddButtonVisibility() {

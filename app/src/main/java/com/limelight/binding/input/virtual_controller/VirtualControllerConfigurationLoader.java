@@ -19,6 +19,7 @@ import org.json.JSONObject;
 public class VirtualControllerConfigurationLoader {
     public static final String OSC_PREFERENCE = "OSC";
     private static final String MAPPED_BUTTON_IDS = "MAPPED_BUTTON_IDS";
+    private static final String STICK_IDS = "STICK_IDS";
 
     private static int getPercent(
             int percent,
@@ -436,6 +437,7 @@ public class VirtualControllerConfigurationLoader {
         SharedPreferences.Editor prefEditor = context.getSharedPreferences(
                 controller.getProfilePreferenceName(), Activity.MODE_PRIVATE).edit();
         JSONArray mappedButtonIds = new JSONArray();
+        JSONArray stickIds = new JSONArray();
 
         // Each profile is a complete snapshot. Clearing first ensures deleted controls and
         // stale custom button IDs cannot reappear on a later stream.
@@ -446,6 +448,9 @@ public class VirtualControllerConfigurationLoader {
             if (element instanceof MappedInputButton) {
                 mappedButtonIds.put(element.elementId);
             }
+            else if (element instanceof KeyboardAnalogStick || element instanceof MouseAnalogStick) {
+                stickIds.put(element.elementId);
+            }
             try {
                 prefEditor.putString(prefKey, element.getConfiguration().toString());
             } catch (JSONException e) {
@@ -455,6 +460,7 @@ public class VirtualControllerConfigurationLoader {
 
         if (controller.isKeyboardMouseMode()) {
             prefEditor.putString(MAPPED_BUTTON_IDS, mappedButtonIds.toString());
+            prefEditor.putString(STICK_IDS, stickIds.toString());
         }
 
         prefEditor.apply();
@@ -463,6 +469,60 @@ public class VirtualControllerConfigurationLoader {
     public static void loadFromPreferences(final VirtualController controller, final Context context) {
         SharedPreferences pref = context.getSharedPreferences(
                 controller.getProfilePreferenceName(), Activity.MODE_PRIVATE);
+
+        String savedStickIds = pref.getString(STICK_IDS, null);
+        if (controller.isKeyboardMouseMode() && savedStickIds != null) {
+            try {
+                JSONArray stickIds = new JSONArray(savedStickIds);
+                controller.removeKeyboardMouseSticks();
+
+                DisplayMetrics screen = context.getResources().getDisplayMetrics();
+                for (int i = 0; i < stickIds.length(); i++) {
+                    int elementId = stickIds.getInt(i);
+                    String jsonConfig = pref.getString(Integer.toString(elementId), null);
+                    if (jsonConfig == null) {
+                        continue;
+                    }
+
+                    try {
+                        JSONObject configuration = new JSONObject(jsonConfig);
+                        VirtualControllerElement stick;
+                        int defaultSize;
+                        int defaultX;
+                        int defaultY;
+                        if (elementId == VirtualControllerElement.EID_KEYBOARD_LS) {
+                            stick = new KeyboardAnalogStick(controller, context, elementId);
+                            defaultSize = (int) (screen.heightPixels * 0.44f);
+                            defaultX = (int) (screen.heightPixels * 0.04f);
+                            defaultY = (int) (screen.heightPixels * 0.48f);
+                        }
+                        else if (elementId == VirtualControllerElement.EID_MOUSE_RS) {
+                            stick = new MouseAnalogStick(controller, context, elementId);
+                            defaultSize = (int) (screen.heightPixels * 0.43f);
+                            defaultX = screen.widthPixels - defaultSize -
+                                    (int) (screen.heightPixels * 0.06f);
+                            defaultY = (int) (screen.heightPixels * 0.49f);
+                        }
+                        else {
+                            continue;
+                        }
+
+                        controller.addElement(stick,
+                                configuration.optInt("LEFT", Math.max(0, defaultX)),
+                                configuration.optInt("TOP", defaultY),
+                                configuration.optInt("WIDTH", defaultSize),
+                                configuration.optInt("HEIGHT", defaultSize));
+                    }
+                    catch (JSONException e) {
+                        pref.edit().remove(Integer.toString(elementId)).apply();
+                    }
+                }
+            }
+            catch (JSONException e) {
+                // Keep the default sticks if the saved inventory itself is corrupt.
+                pref.edit().remove(STICK_IDS).apply();
+            }
+        }
 
         String savedMappedButtonIds = pref.getString(MAPPED_BUTTON_IDS, null);
         if (controller.isKeyboardMouseMode() && savedMappedButtonIds != null) {

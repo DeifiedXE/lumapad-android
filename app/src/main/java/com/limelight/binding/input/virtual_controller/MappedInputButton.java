@@ -22,9 +22,9 @@ import java.util.List;
  */
 @SuppressLint("ViewConstructor")
 public class MappedInputButton extends DigitalButton {
-    private enum Kind { KEYBOARD, MOUSE }
+    enum Kind { KEYBOARD, MOUSE }
 
-    private static final class Binding {
+    static final class Binding {
         final String id;
         final String label;
         final Kind kind;
@@ -109,13 +109,23 @@ public class MappedInputButton extends DigitalButton {
         return binding != null ? binding : BINDINGS[0];
     }
 
-    private static Binding findBindingOrNull(String id) {
+    static Binding findBindingOrNull(String id) {
         for (Binding candidate : BINDINGS) {
             if (candidate.id.equals(id)) {
                 return candidate;
             }
         }
         return null;
+    }
+
+    static Binding[] getKeyboardBindings() {
+        List<Binding> keyboardBindings = new ArrayList<>();
+        for (Binding binding : BINDINGS) {
+            if (binding.kind == Kind.KEYBOARD) {
+                keyboardBindings.add(binding);
+            }
+        }
+        return keyboardBindings.toArray(new Binding[0]);
     }
 
     private static boolean isModifier(Binding binding) {
