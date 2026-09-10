@@ -160,11 +160,11 @@
     <string name="osc_add_control">新增虛擬控制項目</string>
     <string name="osc_add_mapped_button">按鍵</string>
     <string name="osc_add_keyboard_stick">鍵盤移動搖桿</string>
-    <string name="osc_add_mouse_stick">滑鼠移動搖桿</string>
+    <string name="osc_add_aim_zone">自由滑動瞄準區</string>
     <string name="osc_delete_button">刪除按鍵</string>
     <string name="osc_button_deleted">已刪除虛擬按鍵</string>
     <string name="osc_edit_keyboard_stick">編輯鍵盤搖桿</string>
-    <string name="osc_edit_mouse_stick">編輯滑鼠搖桿</string>
+    <string name="osc_edit_aim_zone">編輯瞄準區</string>
     <string name="osc_direction_up">上</string>
     <string name="osc_direction_down">下</string>
     <string name="osc_direction_left">左</string>
@@ -174,6 +174,13 @@
     <string name="osc_invert_mouse_y">反轉垂直軸</string>
     <string name="osc_delete_stick">刪除搖桿</string>
     <string name="osc_stick_deleted">已刪除虛擬搖桿</string>
+    <string name="osc_aim_zone_label">瞄準</string>
+    <string name="osc_aim_hold_binding">觸碰時按住（瞄準／技能）</string>
+    <string name="osc_aim_hold_binding_title">選擇持續按住的輸入</string>
+    <string name="osc_no_hold_input">不按住其他輸入</string>
+    <string name="osc_done">完成</string>
+    <string name="osc_delete_aim_zone">刪除瞄準區</string>
+    <string name="osc_aim_zone_deleted">已刪除瞄準區</string>
     <string name="title_checkbox_vibrate_osc"> 啟用震動 </string>
     <string name="summary_checkbox_vibrate_osc">使用螢幕控制按鈕時震動裝置以仿真遊戲低頻音</string>
     <string name="title_only_l3r3">僅顯示 L3 和 R3</string>

@@ -128,6 +128,10 @@ public class MappedInputButton extends DigitalButton {
         return keyboardBindings.toArray(new Binding[0]);
     }
 
+    static Binding[] getBindings() {
+        return BINDINGS.clone();
+    }
+
     private static boolean isModifier(Binding binding) {
         if (binding.kind != Kind.KEYBOARD) {
             return false;
@@ -139,31 +143,31 @@ public class MappedInputButton extends DigitalButton {
                 binding.code == KeyEvent.KEYCODE_META_LEFT;
     }
 
-    private void emitBinding(Binding binding, boolean down) {
+    private static void emitBinding(VirtualController controller, Binding binding, boolean down) {
         if (binding.kind == Kind.KEYBOARD) {
-            virtualController.mappedKeyboardEvent(binding.code, down);
+            controller.mappedKeyboardEvent(binding.code, down);
         }
         else {
-            virtualController.mappedMouseButtonEvent(binding.code, down);
+            controller.mappedMouseButtonEvent(binding.code, down);
         }
     }
 
-    private void emitBindings(boolean down) {
+    static void emitBindings(VirtualController controller, List<Binding> bindings, boolean down) {
         if (down) {
             // Press modifiers first so combinations such as Ctrl+Shift+Q are recognized.
             for (Binding binding : bindings) {
                 if (isModifier(binding)) {
-                    emitBinding(binding, true);
+                    emitBinding(controller, binding, true);
                 }
             }
             for (Binding binding : bindings) {
                 if (binding.kind == Kind.KEYBOARD && !isModifier(binding)) {
-                    emitBinding(binding, true);
+                    emitBinding(controller, binding, true);
                 }
             }
             for (Binding binding : bindings) {
                 if (binding.kind == Kind.MOUSE) {
-                    emitBinding(binding, true);
+                    emitBinding(controller, binding, true);
                 }
             }
         }
@@ -172,19 +176,19 @@ public class MappedInputButton extends DigitalButton {
             for (int i = bindings.size() - 1; i >= 0; i--) {
                 Binding binding = bindings.get(i);
                 if (binding.kind == Kind.MOUSE) {
-                    emitBinding(binding, false);
+                    emitBinding(controller, binding, false);
                 }
             }
             for (int i = bindings.size() - 1; i >= 0; i--) {
                 Binding binding = bindings.get(i);
                 if (binding.kind == Kind.KEYBOARD && !isModifier(binding)) {
-                    emitBinding(binding, false);
+                    emitBinding(controller, binding, false);
                 }
             }
             for (int i = bindings.size() - 1; i >= 0; i--) {
                 Binding binding = bindings.get(i);
                 if (isModifier(binding)) {
-                    emitBinding(binding, false);
+                    emitBinding(controller, binding, false);
                 }
             }
         }
@@ -211,7 +215,7 @@ public class MappedInputButton extends DigitalButton {
         }
 
         inputDown = down;
-        emitBindings(down);
+        emitBindings(virtualController, bindings, down);
     }
 
     @Override

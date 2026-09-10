@@ -221,11 +221,11 @@
     <string name="osc_add_control">Add virtual control</string>
     <string name="osc_add_mapped_button">Button</string>
     <string name="osc_add_keyboard_stick">Keyboard movement stick</string>
-    <string name="osc_add_mouse_stick">Mouse movement stick</string>
+    <string name="osc_add_aim_zone">Free-swipe aim area</string>
     <string name="osc_delete_button">Delete button</string>
     <string name="osc_button_deleted">Virtual button deleted</string>
     <string name="osc_edit_keyboard_stick">Edit keyboard stick</string>
-    <string name="osc_edit_mouse_stick">Edit mouse stick</string>
+    <string name="osc_edit_aim_zone">Edit aim area</string>
     <string name="osc_direction_up">Up</string>
     <string name="osc_direction_down">Down</string>
     <string name="osc_direction_left">Left</string>
@@ -235,6 +235,13 @@
     <string name="osc_invert_mouse_y">Invert vertical axis</string>
     <string name="osc_delete_stick">Delete stick</string>
     <string name="osc_stick_deleted">Virtual stick deleted</string>
+    <string name="osc_aim_zone_label">AIM</string>
+    <string name="osc_aim_hold_binding">Hold while touching (aim/action)</string>
+    <string name="osc_aim_hold_binding_title">Choose held inputs</string>
+    <string name="osc_no_hold_input">No held input</string>
+    <string name="osc_done">Done</string>
+    <string name="osc_delete_aim_zone">Delete aim area</string>
+    <string name="osc_aim_zone_deleted">Aim area deleted</string>
     <string name="title_checkbox_vibrate_osc">Enable vibration</string>
     <string name="summary_checkbox_vibrate_osc">Vibrates your device to emulate rumble for the on-screen controls</string>
     <string name="title_only_l3r3">Only show L3 and R3</string>

@@ -262,7 +262,7 @@ public class VirtualController {
     void removeKeyboardMouseSticks() {
         List<VirtualControllerElement> sticks = new ArrayList<>();
         for (VirtualControllerElement element : elements) {
-            if (element instanceof KeyboardAnalogStick || element instanceof MouseAnalogStick) {
+            if (element instanceof KeyboardAnalogStick || element instanceof MouseAimZone) {
                 sticks.add(element);
             }
         }
@@ -286,8 +286,7 @@ public class VirtualController {
     }
 
     void removeVirtualStick(VirtualControllerElement stick) {
-        if (!(stick instanceof KeyboardAnalogStick || stick instanceof MouseAnalogStick) ||
-                !elements.remove(stick)) {
+        if (!(stick instanceof KeyboardAnalogStick) || !elements.remove(stick)) {
             return;
         }
 
@@ -295,6 +294,17 @@ public class VirtualController {
         frame_layout.removeView(stick);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         Toast.makeText(context, R.string.osc_stick_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    void removeAimZone(MouseAimZone aimZone) {
+        if (!elements.remove(aimZone)) {
+            return;
+        }
+
+        aimZone.releaseInput();
+        frame_layout.removeView(aimZone);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_aim_zone_deleted, Toast.LENGTH_SHORT).show();
     }
 
     private boolean hasElement(int elementId) {
@@ -320,7 +330,7 @@ public class VirtualController {
             choiceTypes.add(1);
         }
         if (!hasElement(VirtualControllerElement.EID_MOUSE_RS)) {
-            choices.add(context.getString(R.string.osc_add_mouse_stick));
+            choices.add(context.getString(R.string.osc_add_aim_zone));
             choiceTypes.add(2);
         }
 
@@ -332,7 +342,7 @@ public class VirtualController {
                             addKeyboardStick();
                             break;
                         case 2:
-                            addMouseStick();
+                            addAimZone();
                             break;
                         default:
                             addMappedButton();
@@ -385,20 +395,21 @@ public class VirtualController {
         stick.showBindingDialog();
     }
 
-    private void addMouseStick() {
+    private void addAimZone() {
         if (hasElement(VirtualControllerElement.EID_MOUSE_RS)) {
             return;
         }
 
         DisplayMetrics screen = context.getResources().getDisplayMetrics();
-        int stickSize = (int) (screen.heightPixels * 0.43f);
-        int x = screen.widthPixels - stickSize - (int) (screen.heightPixels * 0.06f);
-        MouseAnalogStick stick = new MouseAnalogStick(this, context,
+        int zoneWidth = (int) (screen.heightPixels * 58f / 72f);
+        int zoneHeight = (int) (screen.heightPixels * 62f / 72f);
+        int x = screen.widthPixels - (int) (screen.heightPixels * 60f / 72f);
+        MouseAimZone aimZone = new MouseAimZone(this, context,
                 VirtualControllerElement.EID_MOUSE_RS);
-        addElement(stick, Math.max(0, x), (int) (screen.heightPixels * 0.49f),
-                stickSize, stickSize);
+        addElement(aimZone, Math.max(0, x), (int) (screen.heightPixels * 5f / 72f),
+                zoneWidth, zoneHeight);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
-        stick.showBindingDialog();
+        aimZone.showBindingDialog();
     }
 
     private void updateAddButtonVisibility() {

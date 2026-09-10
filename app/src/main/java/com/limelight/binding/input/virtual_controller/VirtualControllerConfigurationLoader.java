@@ -384,10 +384,10 @@ public class VirtualControllerConfigurationLoader {
                 screenScale(3, height), screenScale(37, height),
                 screenScale(32, height), screenScale(32, height));
 
-        controller.addElement(new MouseAnalogStick(controller, context,
+        controller.addElement(new MouseAimZone(controller, context,
                         VirtualControllerElement.EID_MOUSE_RS),
-                screenScale(93, height) + rightDisplacement, screenScale(38, height),
-                screenScale(31, height), screenScale(31, height));
+                screenScale(68, height) + rightDisplacement, screenScale(5, height),
+                screenScale(58, height), screenScale(62, height));
 
         addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_LMB,
                 "mouse_left", 92, 27, 14, 9, rightDisplacement);
@@ -448,7 +448,7 @@ public class VirtualControllerConfigurationLoader {
             if (element instanceof MappedInputButton) {
                 mappedButtonIds.put(element.elementId);
             }
-            else if (element instanceof KeyboardAnalogStick || element instanceof MouseAnalogStick) {
+            else if (element instanceof KeyboardAnalogStick || element instanceof MouseAimZone) {
                 stickIds.put(element.elementId);
             }
             try {
@@ -487,21 +487,22 @@ public class VirtualControllerConfigurationLoader {
                     try {
                         JSONObject configuration = new JSONObject(jsonConfig);
                         VirtualControllerElement stick;
-                        int defaultSize;
+                        int defaultWidth;
+                        int defaultHeight;
                         int defaultX;
                         int defaultY;
                         if (elementId == VirtualControllerElement.EID_KEYBOARD_LS) {
                             stick = new KeyboardAnalogStick(controller, context, elementId);
-                            defaultSize = (int) (screen.heightPixels * 0.44f);
+                            defaultWidth = defaultHeight = (int) (screen.heightPixels * 0.44f);
                             defaultX = (int) (screen.heightPixels * 0.04f);
                             defaultY = (int) (screen.heightPixels * 0.48f);
                         }
                         else if (elementId == VirtualControllerElement.EID_MOUSE_RS) {
-                            stick = new MouseAnalogStick(controller, context, elementId);
-                            defaultSize = (int) (screen.heightPixels * 0.43f);
-                            defaultX = screen.widthPixels - defaultSize -
-                                    (int) (screen.heightPixels * 0.06f);
-                            defaultY = (int) (screen.heightPixels * 0.49f);
+                            stick = new MouseAimZone(controller, context, elementId);
+                            defaultWidth = screenScale(58, screen.heightPixels);
+                            defaultHeight = screenScale(62, screen.heightPixels);
+                            defaultX = screen.widthPixels - screenScale(60, screen.heightPixels);
+                            defaultY = screenScale(5, screen.heightPixels);
                         }
                         else {
                             continue;
@@ -510,8 +511,8 @@ public class VirtualControllerConfigurationLoader {
                         controller.addElement(stick,
                                 configuration.optInt("LEFT", Math.max(0, defaultX)),
                                 configuration.optInt("TOP", defaultY),
-                                configuration.optInt("WIDTH", defaultSize),
-                                configuration.optInt("HEIGHT", defaultSize));
+                                configuration.optInt("WIDTH", defaultWidth),
+                                configuration.optInt("HEIGHT", defaultHeight));
                     }
                     catch (JSONException e) {
                         pref.edit().remove(Integer.toString(elementId)).apply();
