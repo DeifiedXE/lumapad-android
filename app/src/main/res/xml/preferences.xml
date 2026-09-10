@@ -160,6 +160,14 @@
             android:key="list_onscreen_input_mode"
             android:summary="@string/summary_onscreen_input_mode"
             android:title="@string/title_onscreen_input_mode" />
+        <ListPreference
+            android:defaultValue="full_keyboard"
+            android:dependency="checkbox_show_onscreen_controls"
+            android:entries="@array/onscreen_binding_editor_names"
+            android:entryValues="@array/onscreen_binding_editor_values"
+            android:key="list_onscreen_binding_editor"
+            android:summary="@string/summary_onscreen_binding_editor"
+            android:title="@string/title_onscreen_binding_editor" />
         <CheckBoxPreference
             android:key="checkbox_vibrate_osc"
             android:dependency="checkbox_show_onscreen_controls"

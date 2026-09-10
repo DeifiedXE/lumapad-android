@@ -1,11 +1,8 @@
 package com.limelight.binding.input.virtual_controller;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.limelight.R;
 import com.limelight.binding.input.evdev.EvdevListener;
@@ -48,14 +45,32 @@ public class MappedInputButton extends DigitalButton {
         bindings.add(new Binding("mouse_x1", "M4", Kind.MOUSE, EvdevListener.BUTTON_X1));
         bindings.add(new Binding("mouse_x2", "M5", Kind.MOUSE, EvdevListener.BUTTON_X2));
 
-        bindings.add(new Binding("key_space", "SPACE", Kind.KEYBOARD, KeyEvent.KEYCODE_SPACE));
-        bindings.add(new Binding("key_shift", "SHIFT", Kind.KEYBOARD, KeyEvent.KEYCODE_SHIFT_LEFT));
-        bindings.add(new Binding("key_ctrl", "CTRL", Kind.KEYBOARD, KeyEvent.KEYCODE_CTRL_LEFT));
-        bindings.add(new Binding("key_alt", "ALT", Kind.KEYBOARD, KeyEvent.KEYCODE_ALT_LEFT));
-        bindings.add(new Binding("key_tab", "TAB", Kind.KEYBOARD, KeyEvent.KEYCODE_TAB));
         bindings.add(new Binding("key_escape", "ESC", Kind.KEYBOARD, KeyEvent.KEYCODE_ESCAPE));
+        bindings.add(new Binding("key_tab", "TAB", Kind.KEYBOARD, KeyEvent.KEYCODE_TAB));
+        bindings.add(new Binding("key_caps_lock", "CAPS", Kind.KEYBOARD, KeyEvent.KEYCODE_CAPS_LOCK));
+        bindings.add(new Binding("key_shift_left", "L SHIFT", Kind.KEYBOARD, KeyEvent.KEYCODE_SHIFT_LEFT));
+        bindings.add(new Binding("key_shift_right", "R SHIFT", Kind.KEYBOARD, KeyEvent.KEYCODE_SHIFT_RIGHT));
+        bindings.add(new Binding("key_ctrl_left", "L CTRL", Kind.KEYBOARD, KeyEvent.KEYCODE_CTRL_LEFT));
+        bindings.add(new Binding("key_ctrl_right", "R CTRL", Kind.KEYBOARD, KeyEvent.KEYCODE_CTRL_RIGHT));
+        bindings.add(new Binding("key_alt_left", "L ALT", Kind.KEYBOARD, KeyEvent.KEYCODE_ALT_LEFT));
+        bindings.add(new Binding("key_alt_right", "R ALT", Kind.KEYBOARD, KeyEvent.KEYCODE_ALT_RIGHT));
+        bindings.add(new Binding("key_meta_left", "L WIN", Kind.KEYBOARD, KeyEvent.KEYCODE_META_LEFT));
+        bindings.add(new Binding("key_meta_right", "R WIN", Kind.KEYBOARD, KeyEvent.KEYCODE_META_RIGHT));
+        bindings.add(new Binding("key_menu", "MENU", Kind.KEYBOARD, KeyEvent.KEYCODE_MENU));
+        bindings.add(new Binding("key_space", "SPACE", Kind.KEYBOARD, KeyEvent.KEYCODE_SPACE));
         bindings.add(new Binding("key_enter", "ENTER", Kind.KEYBOARD, KeyEvent.KEYCODE_ENTER));
         bindings.add(new Binding("key_backspace", "BACK", Kind.KEYBOARD, KeyEvent.KEYCODE_DEL));
+        bindings.add(new Binding("key_grave", "`", Kind.KEYBOARD, KeyEvent.KEYCODE_GRAVE));
+        bindings.add(new Binding("key_minus", "-", Kind.KEYBOARD, KeyEvent.KEYCODE_MINUS));
+        bindings.add(new Binding("key_equals", "=", Kind.KEYBOARD, KeyEvent.KEYCODE_EQUALS));
+        bindings.add(new Binding("key_left_bracket", "[", Kind.KEYBOARD, KeyEvent.KEYCODE_LEFT_BRACKET));
+        bindings.add(new Binding("key_right_bracket", "]", Kind.KEYBOARD, KeyEvent.KEYCODE_RIGHT_BRACKET));
+        bindings.add(new Binding("key_backslash", "\\", Kind.KEYBOARD, KeyEvent.KEYCODE_BACKSLASH));
+        bindings.add(new Binding("key_semicolon", ";", Kind.KEYBOARD, KeyEvent.KEYCODE_SEMICOLON));
+        bindings.add(new Binding("key_apostrophe", "'", Kind.KEYBOARD, KeyEvent.KEYCODE_APOSTROPHE));
+        bindings.add(new Binding("key_comma", ",", Kind.KEYBOARD, KeyEvent.KEYCODE_COMMA));
+        bindings.add(new Binding("key_period", ".", Kind.KEYBOARD, KeyEvent.KEYCODE_PERIOD));
+        bindings.add(new Binding("key_slash", "/", Kind.KEYBOARD, KeyEvent.KEYCODE_SLASH));
 
         for (int i = 0; i <= 9; i++) {
             bindings.add(new Binding("key_" + i, Integer.toString(i), Kind.KEYBOARD,
@@ -71,10 +86,31 @@ public class MappedInputButton extends DigitalButton {
                     KeyEvent.KEYCODE_F1 + i));
         }
 
+        bindings.add(new Binding("key_print_screen", "PRT SC", Kind.KEYBOARD, KeyEvent.KEYCODE_SYSRQ));
+        bindings.add(new Binding("key_scroll_lock", "SCR LK", Kind.KEYBOARD, KeyEvent.KEYCODE_SCROLL_LOCK));
+        bindings.add(new Binding("key_pause", "PAUSE", Kind.KEYBOARD, KeyEvent.KEYCODE_BREAK));
+        bindings.add(new Binding("key_insert", "INS", Kind.KEYBOARD, KeyEvent.KEYCODE_INSERT));
+        bindings.add(new Binding("key_home", "HOME", Kind.KEYBOARD, KeyEvent.KEYCODE_MOVE_HOME));
+        bindings.add(new Binding("key_page_up", "PG UP", Kind.KEYBOARD, KeyEvent.KEYCODE_PAGE_UP));
+        bindings.add(new Binding("key_delete", "DEL", Kind.KEYBOARD, KeyEvent.KEYCODE_FORWARD_DEL));
+        bindings.add(new Binding("key_end", "END", Kind.KEYBOARD, KeyEvent.KEYCODE_MOVE_END));
+        bindings.add(new Binding("key_page_down", "PG DN", Kind.KEYBOARD, KeyEvent.KEYCODE_PAGE_DOWN));
         bindings.add(new Binding("key_up", "UP", Kind.KEYBOARD, KeyEvent.KEYCODE_DPAD_UP));
         bindings.add(new Binding("key_down", "DOWN", Kind.KEYBOARD, KeyEvent.KEYCODE_DPAD_DOWN));
         bindings.add(new Binding("key_left", "LEFT", Kind.KEYBOARD, KeyEvent.KEYCODE_DPAD_LEFT));
         bindings.add(new Binding("key_right", "RIGHT", Kind.KEYBOARD, KeyEvent.KEYCODE_DPAD_RIGHT));
+
+        bindings.add(new Binding("key_num_lock", "NUM", Kind.KEYBOARD, KeyEvent.KEYCODE_NUM_LOCK));
+        for (int i = 0; i <= 9; i++) {
+            bindings.add(new Binding("key_numpad_" + i, "NUM " + i, Kind.KEYBOARD,
+                    KeyEvent.KEYCODE_NUMPAD_0 + i));
+        }
+        bindings.add(new Binding("key_numpad_divide", "NUM /", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_DIVIDE));
+        bindings.add(new Binding("key_numpad_multiply", "NUM *", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_MULTIPLY));
+        bindings.add(new Binding("key_numpad_subtract", "NUM -", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_SUBTRACT));
+        bindings.add(new Binding("key_numpad_add", "NUM +", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_ADD));
+        bindings.add(new Binding("key_numpad_enter", "NUM ENTER", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_ENTER));
+        bindings.add(new Binding("key_numpad_dot", "NUM .", Kind.KEYBOARD, KeyEvent.KEYCODE_NUMPAD_DOT));
         return bindings.toArray(new Binding[0]);
     }
 
@@ -110,6 +146,11 @@ public class MappedInputButton extends DigitalButton {
     }
 
     static Binding findBindingOrNull(String id) {
+        // Migrate profiles written before left/right modifier keys were distinguished.
+        if ("key_shift".equals(id)) id = "key_shift_left";
+        else if ("key_ctrl".equals(id)) id = "key_ctrl_left";
+        else if ("key_alt".equals(id)) id = "key_alt_left";
+
         for (Binding candidate : BINDINGS) {
             if (candidate.id.equals(id)) {
                 return candidate;
@@ -138,9 +179,13 @@ public class MappedInputButton extends DigitalButton {
         }
 
         return binding.code == KeyEvent.KEYCODE_CTRL_LEFT ||
+                binding.code == KeyEvent.KEYCODE_CTRL_RIGHT ||
                 binding.code == KeyEvent.KEYCODE_SHIFT_LEFT ||
+                binding.code == KeyEvent.KEYCODE_SHIFT_RIGHT ||
                 binding.code == KeyEvent.KEYCODE_ALT_LEFT ||
-                binding.code == KeyEvent.KEYCODE_META_LEFT;
+                binding.code == KeyEvent.KEYCODE_ALT_RIGHT ||
+                binding.code == KeyEvent.KEYCODE_META_LEFT ||
+                binding.code == KeyEvent.KEYCODE_META_RIGHT;
     }
 
     private static void emitBinding(VirtualController controller, Binding binding, boolean down) {
@@ -225,51 +270,16 @@ public class MappedInputButton extends DigitalButton {
 
     @Override
     protected void showBindingDialog() {
-        CharSequence[] labels = new CharSequence[BINDINGS.length];
-        boolean[] selected = new boolean[BINDINGS.length];
-        for (int i = 0; i < BINDINGS.length; i++) {
-            labels[i] = BINDINGS[i].label;
-            for (Binding activeBinding : bindings) {
-                if (BINDINGS[i].id.equals(activeBinding.id)) {
-                    selected[i] = true;
-                    break;
-                }
-            }
-        }
-
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(getContext().getString(R.string.osc_binding_title, getBindingSummary()))
-                .setMultiChoiceItems(labels, selected, (chooser, which, isChecked) ->
-                        selected[which] = isChecked)
-                .setPositiveButton(R.string.osc_binding_save, null)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setNeutralButton(R.string.osc_delete_button, (chooser, which) ->
-                        virtualController.removeMappedButton(MappedInputButton.this))
-                .create();
-
-        dialog.setOnShowListener(ignored -> dialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                .setOnClickListener(view -> {
-                    List<Binding> selectedBindings = new ArrayList<>();
-                    for (int i = 0; i < BINDINGS.length; i++) {
-                        if (selected[i]) {
-                            selectedBindings.add(BINDINGS[i]);
-                        }
-                    }
-
-                    if (selectedBindings.isEmpty()) {
-                        Toast.makeText(getContext(), R.string.osc_binding_required,
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
+        BindingEditorDialog.show(getContext(),
+                getContext().getString(R.string.osc_binding_title, getBindingSummary()),
+                BINDINGS, bindings, true, false,
+                selectedBindings -> {
                     releaseInput();
                     bindings.clear();
                     bindings.addAll(selectedBindings);
                     updateLabel();
                     VirtualControllerConfigurationLoader.saveProfile(virtualController, getContext());
-                    dialog.dismiss();
-                }));
-        dialog.show();
+                }, () -> virtualController.removeMappedButton(MappedInputButton.this));
     }
 
     @Override

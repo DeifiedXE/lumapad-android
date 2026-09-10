@@ -356,6 +356,10 @@ public class KeyboardTranslator implements InputManager.InputDeviceListener {
                 translated = 0x6E;
                 break;
 
+            case KeyEvent.KEYCODE_NUMPAD_ENTER:
+                translated = 0x0D;
+                break;
+
             case KeyEvent.KEYCODE_PRINT:
                 translated = 0x2A;
                 break;

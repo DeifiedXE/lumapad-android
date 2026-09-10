@@ -11,7 +11,10 @@ Sunshine host; no LumaPad-specific Windows service is required.
   inversion, and a configurable input combination held for as long as the area is touched.
 - Uncovered video area: Moonlight's normal relative mouse trackpad.
 - Round buttons: addable, removable, and bindable to one input or a multi-key combination of
-  mouse buttons, 0-9, A-Z, F1-F12, arrows, and common modifier keys.
+  mouse buttons, alphanumeric and function keys, navigation keys, numpad keys, and distinct
+  left/right Ctrl, Shift, Alt, and Windows modifier keys.
+- Binding editor: a full-screen PC keyboard for visual key selection, with the original list
+  selector retained as an option under On-screen Controls settings.
 - Profiles: saved separately for each streamed application and input mode.
 - Physical gamepads: continue to pass through using Moonlight's existing controller path.
 
@@ -21,6 +24,10 @@ move, resize, binding, and active modes. In binding mode, tap a round button to 
 inputs, or delete it. Tap the keyboard stick or aim area to edit or delete it. The **+** menu can
 create a virtual button and restore a deleted keyboard stick or aim area. Set the aim area's
 touch-held input to **RMB** for games that aim while the right mouse button is held.
+
+The binding interface defaults to **Full-screen PC keyboard**. Change **Button mapping interface**
+to **Original list selector** in the On-screen Controls settings if a compact scrolling list is
+preferred. Both interfaces expose the complete key set and keep left/right modifiers separate.
 
 The default mapping is aimed at action RPGs such as Path of Exile: mouse buttons, Q/W/E/R, and
 1-5 are immediately available, while the left stick provides WASD movement for games that support

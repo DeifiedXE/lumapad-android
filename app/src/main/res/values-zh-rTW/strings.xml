@@ -148,6 +148,10 @@
     <string name="summary_onscreen_input_mode">鍵盤＋滑鼠模式可用於不支援手把的遊戲</string>
     <string name="onscreen_input_mode_keyboard_mouse">鍵盤＋滑鼠（混合搖桿）</string>
     <string name="onscreen_input_mode_gamepad">標準手把</string>
+    <string name="title_onscreen_binding_editor">按鍵映射介面</string>
+    <string name="summary_onscreen_binding_editor">選擇滿版 PC 鍵盤或原本的清單式選擇器</string>
+    <string name="onscreen_binding_editor_keyboard">滿版 PC 鍵盤</string>
+    <string name="onscreen_binding_editor_list">原本的清單式選擇器</string>
     <string name="osc_mode_move">移動控制項目</string>
     <string name="osc_mode_resize">調整控制項目大小</string>
     <string name="osc_mode_bind">點按鍵或搖桿可編輯／刪除；按＋新增</string>
@@ -156,6 +160,9 @@
     <string name="osc_binding_save">儲存組合鍵</string>
     <string name="osc_save">儲存</string>
     <string name="osc_binding_required">請至少選擇一個輸入</string>
+    <string name="osc_binding_selected">已選：%1$s</string>
+    <string name="osc_binding_none">無</string>
+    <string name="osc_binding_keyboard_hint">可點選多個按鍵建立組合；左右側修飾鍵會分開處理。</string>
     <string name="osc_configure_controls">設定虛擬按鍵</string>
     <string name="osc_add_control">新增虛擬控制項目</string>
     <string name="osc_add_mapped_button">按鍵</string>

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import com.limelight.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Collections;
 
 /** Maps an analog touch stick to four independently configurable keyboard directions. */
 @SuppressLint("ViewConstructor")
@@ -147,6 +150,76 @@ public class KeyboardAnalogStick extends AnalogStick {
 
     @Override
     protected void showBindingDialog() {
+        if (BindingEditorDialog.usesFullKeyboard(getContext())) {
+            showKeyboardBindingDialog();
+        }
+        else {
+            showListBindingDialog();
+        }
+    }
+
+    private Button addDirectionButton(LinearLayout parent, int labelResource,
+                                      MappedInputButton.Binding[] choices,
+                                      MappedInputButton.Binding[] pendingBindings, int index) {
+        LinearLayout row = new LinearLayout(getContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setPadding(0, dp(4), 0, dp(4));
+
+        TextView label = new TextView(getContext());
+        label.setText(labelResource);
+        label.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        row.addView(label, new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        Button button = new Button(getContext());
+        button.setAllCaps(false);
+        button.setText(pendingBindings[index].label);
+        button.setOnClickListener(view -> BindingEditorDialog.show(getContext(),
+                getContext().getString(R.string.osc_binding_title,
+                        getContext().getString(labelResource)),
+                choices, Collections.singletonList(pendingBindings[index]), true, true,
+                savedBindings -> {
+                    pendingBindings[index] = savedBindings.get(0);
+                    button.setText(pendingBindings[index].label);
+                }, null));
+        row.addView(button, new LinearLayout.LayoutParams(0,
+                ViewGroup.LayoutParams.WRAP_CONTENT, 1.5f));
+        parent.addView(row);
+        return button;
+    }
+
+    private void showKeyboardBindingDialog() {
+        MappedInputButton.Binding[] choices = MappedInputButton.getKeyboardBindings();
+        MappedInputButton.Binding[] pendingBindings = {
+                upBinding, downBinding, leftBinding, rightBinding
+        };
+
+        LinearLayout content = new LinearLayout(getContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(dp(20), dp(8), dp(20), 0);
+        addDirectionButton(content, R.string.osc_direction_up, choices, pendingBindings, 0);
+        addDirectionButton(content, R.string.osc_direction_down, choices, pendingBindings, 1);
+        addDirectionButton(content, R.string.osc_direction_left, choices, pendingBindings, 2);
+        addDirectionButton(content, R.string.osc_direction_right, choices, pendingBindings, 3);
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.osc_edit_keyboard_stick)
+                .setView(content)
+                .setPositiveButton(R.string.osc_save, (dialog, which) -> {
+                    releaseInput();
+                    upBinding = pendingBindings[0];
+                    downBinding = pendingBindings[1];
+                    leftBinding = pendingBindings[2];
+                    rightBinding = pendingBindings[3];
+                    VirtualControllerConfigurationLoader.saveProfile(virtualController, getContext());
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .setNeutralButton(R.string.osc_delete_stick, (dialog, which) ->
+                        virtualController.removeVirtualStick(KeyboardAnalogStick.this))
+                .show();
+    }
+
+    private void showListBindingDialog() {
         MappedInputButton.Binding[] choices = MappedInputButton.getKeyboardBindings();
         LinearLayout content = new LinearLayout(getContext());
         content.setOrientation(LinearLayout.VERTICAL);

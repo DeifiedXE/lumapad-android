@@ -146,4 +146,12 @@
         <item>keyboard_mouse</item>
         <item>gamepad</item>
     </string-array>
+    <string-array name="onscreen_binding_editor_names">
+        <item>@string/onscreen_binding_editor_keyboard</item>
+        <item>@string/onscreen_binding_editor_list</item>
+    </string-array>
+    <string-array name="onscreen_binding_editor_values" translatable="false">
+        <item>full_keyboard</item>
+        <item>list</item>
+    </string-array>
 </resources>

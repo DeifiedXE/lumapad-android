@@ -209,6 +209,10 @@
     <string name="summary_onscreen_input_mode">Keyboard + mouse works with games that do not support controllers</string>
     <string name="onscreen_input_mode_keyboard_mouse">Keyboard + mouse (mixed sticks)</string>
     <string name="onscreen_input_mode_gamepad">Standard gamepad</string>
+    <string name="title_onscreen_binding_editor">Button mapping interface</string>
+    <string name="summary_onscreen_binding_editor">Choose the full-screen PC keyboard or the original list selector</string>
+    <string name="onscreen_binding_editor_keyboard">Full-screen PC keyboard</string>
+    <string name="onscreen_binding_editor_list">Original list selector</string>
     <string name="osc_mode_move">Move controls</string>
     <string name="osc_mode_resize">Resize controls</string>
     <string name="osc_mode_bind">Tap a button or stick to edit/delete it; use + to add one</string>
@@ -217,6 +221,9 @@
     <string name="osc_binding_save">Save combination</string>
     <string name="osc_save">Save</string>
     <string name="osc_binding_required">Select at least one input</string>
+    <string name="osc_binding_selected">Selected: %1$s</string>
+    <string name="osc_binding_none">None</string>
+    <string name="osc_binding_keyboard_hint">Tap multiple keys to build a combination. Left and right modifier keys are separate.</string>
     <string name="osc_configure_controls">Configure touch controls</string>
     <string name="osc_add_control">Add virtual control</string>
     <string name="osc_add_mapped_button">Button</string>

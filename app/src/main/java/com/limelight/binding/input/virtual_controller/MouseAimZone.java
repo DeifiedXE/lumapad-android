@@ -146,38 +146,28 @@ public class MouseAimZone extends VirtualControllerElement {
         label.setText(getContext().getString(R.string.osc_mouse_sensitivity, percent));
     }
 
-    private String getHoldSummary(boolean[] selected, MappedInputButton.Binding[] choices) {
+    private String getHoldSummary(List<MappedInputButton.Binding> selected) {
         StringBuilder summary = new StringBuilder();
-        for (int i = 0; i < choices.length; i++) {
-            if (selected[i]) {
-                if (summary.length() != 0) {
-                    summary.append('+');
-                }
-                summary.append(choices[i].label);
+        for (MappedInputButton.Binding binding : selected) {
+            if (summary.length() != 0) {
+                summary.append('+');
             }
+            summary.append(binding.label);
         }
         return summary.length() == 0 ? getContext().getString(R.string.osc_no_hold_input) :
                 summary.toString();
     }
 
-    private void showHoldBindingDialog(boolean[] selected, MappedInputButton.Binding[] choices,
+    private void showHoldBindingDialog(List<MappedInputButton.Binding> selected,
                                        Button bindingButton) {
-        CharSequence[] labels = new CharSequence[choices.length];
-        for (int i = 0; i < choices.length; i++) {
-            labels[i] = choices[i].label;
-        }
-
-        boolean[] pendingSelection = selected.clone();
-        new AlertDialog.Builder(getContext())
-                .setTitle(R.string.osc_aim_hold_binding_title)
-                .setMultiChoiceItems(labels, pendingSelection, (dialog, which, isChecked) ->
-                        pendingSelection[which] = isChecked)
-                .setPositiveButton(R.string.osc_done, (dialog, which) -> {
-                    System.arraycopy(pendingSelection, 0, selected, 0, selected.length);
-                    bindingButton.setText(getHoldSummary(selected, choices));
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .show();
+        BindingEditorDialog.show(getContext(),
+                getContext().getString(R.string.osc_aim_hold_binding_title),
+                MappedInputButton.getBindings(), selected, false, false,
+                savedBindings -> {
+                    selected.clear();
+                    selected.addAll(savedBindings);
+                    bindingButton.setText(getHoldSummary(selected));
+                }, null);
     }
 
     @Override
@@ -225,22 +215,13 @@ public class MouseAimZone extends VirtualControllerElement {
         holdInputLabel.setPadding(0, dp(8), 0, 0);
         content.addView(holdInputLabel);
 
-        MappedInputButton.Binding[] bindingChoices = MappedInputButton.getBindings();
-        boolean[] selectedBindings = new boolean[bindingChoices.length];
-        for (int i = 0; i < bindingChoices.length; i++) {
-            for (MappedInputButton.Binding activeBinding : holdBindings) {
-                if (bindingChoices[i].id.equals(activeBinding.id)) {
-                    selectedBindings[i] = true;
-                    break;
-                }
-            }
-        }
+        List<MappedInputButton.Binding> selectedBindings = new ArrayList<>(holdBindings);
 
         Button bindingButton = new Button(getContext());
         bindingButton.setAllCaps(false);
-        bindingButton.setText(getHoldSummary(selectedBindings, bindingChoices));
+        bindingButton.setText(getHoldSummary(selectedBindings));
         bindingButton.setOnClickListener(view -> showHoldBindingDialog(
-                selectedBindings, bindingChoices, bindingButton));
+                selectedBindings, bindingButton));
         content.addView(bindingButton);
 
         ScrollView scrollView = new ScrollView(getContext());
@@ -255,11 +236,7 @@ public class MouseAimZone extends VirtualControllerElement {
                     invertX = invertXCheckBox.isChecked();
                     invertY = invertYCheckBox.isChecked();
                     holdBindings.clear();
-                    for (int i = 0; i < bindingChoices.length; i++) {
-                        if (selectedBindings[i]) {
-                            holdBindings.add(bindingChoices[i]);
-                        }
-                    }
+                    holdBindings.addAll(selectedBindings);
                     VirtualControllerConfigurationLoader.saveProfile(virtualController, getContext());
                 })
                 .setNegativeButton(android.R.string.cancel, null)
