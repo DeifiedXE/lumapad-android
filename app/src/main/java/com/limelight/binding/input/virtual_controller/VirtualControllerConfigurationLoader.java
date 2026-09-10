@@ -13,10 +13,12 @@ import com.limelight.nvstream.input.ControllerPacket;
 import com.limelight.preferences.PreferenceConfiguration;
 
 import org.json.JSONException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class VirtualControllerConfigurationLoader {
     public static final String OSC_PREFERENCE = "OSC";
+    private static final String MAPPED_BUTTON_IDS = "MAPPED_BUTTON_IDS";
 
     private static int getPercent(
             int percent,
@@ -433,14 +435,26 @@ public class VirtualControllerConfigurationLoader {
                                    final Context context) {
         SharedPreferences.Editor prefEditor = context.getSharedPreferences(
                 controller.getProfilePreferenceName(), Activity.MODE_PRIVATE).edit();
+        JSONArray mappedButtonIds = new JSONArray();
+
+        // Each profile is a complete snapshot. Clearing first ensures deleted controls and
+        // stale custom button IDs cannot reappear on a later stream.
+        prefEditor.clear();
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;
+            if (element instanceof MappedInputButton) {
+                mappedButtonIds.put(element.elementId);
+            }
             try {
                 prefEditor.putString(prefKey, element.getConfiguration().toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        if (controller.isKeyboardMouseMode()) {
+            prefEditor.putString(MAPPED_BUTTON_IDS, mappedButtonIds.toString());
         }
 
         prefEditor.apply();
@@ -449,6 +463,43 @@ public class VirtualControllerConfigurationLoader {
     public static void loadFromPreferences(final VirtualController controller, final Context context) {
         SharedPreferences pref = context.getSharedPreferences(
                 controller.getProfilePreferenceName(), Activity.MODE_PRIVATE);
+
+        String savedMappedButtonIds = pref.getString(MAPPED_BUTTON_IDS, null);
+        if (controller.isKeyboardMouseMode() && savedMappedButtonIds != null) {
+            try {
+                JSONArray mappedButtonIds = new JSONArray(savedMappedButtonIds);
+                controller.removeMappedButtons();
+
+                DisplayMetrics screen = context.getResources().getDisplayMetrics();
+                int defaultSize = (int) (screen.heightPixels * 0.13f);
+                for (int i = 0; i < mappedButtonIds.length(); i++) {
+                    int elementId = mappedButtonIds.getInt(i);
+                    String jsonConfig = pref.getString(Integer.toString(elementId), null);
+                    if (jsonConfig == null) {
+                        continue;
+                    }
+
+                    try {
+                        JSONObject configuration = new JSONObject(jsonConfig);
+                        String bindingId = configuration.optString("BINDING", "key_space");
+                        controller.addElement(createMappedButton(elementId, bindingId, 10,
+                                        controller, context),
+                                configuration.optInt("LEFT", (screen.widthPixels - defaultSize) / 2),
+                                configuration.optInt("TOP", (screen.heightPixels - defaultSize) / 2),
+                                configuration.optInt("WIDTH", defaultSize),
+                                configuration.optInt("HEIGHT", defaultSize));
+                    }
+                    catch (JSONException e) {
+                        // Skip only the corrupt button while preserving the rest of the profile.
+                        pref.edit().remove(Integer.toString(elementId)).apply();
+                    }
+                }
+            }
+            catch (JSONException e) {
+                // Keep the default buttons if the saved inventory itself is corrupt.
+                pref.edit().remove(MAPPED_BUTTON_IDS).apply();
+            }
+        }
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;

@@ -211,9 +211,15 @@
     <string name="onscreen_input_mode_gamepad">Standard gamepad</string>
     <string name="osc_mode_move">Move controls</string>
     <string name="osc_mode_resize">Resize controls</string>
-    <string name="osc_mode_bind">Tap a control to change its binding</string>
+    <string name="osc_mode_bind">Tap a button to bind or delete it; use + to add one</string>
     <string name="osc_mode_active">Layout saved</string>
     <string name="osc_binding_title">Choose input for %1$s</string>
+    <string name="osc_binding_save">Save combination</string>
+    <string name="osc_binding_required">Select at least one input</string>
+    <string name="osc_configure_controls">Configure touch controls</string>
+    <string name="osc_add_button">Add virtual button</string>
+    <string name="osc_delete_button">Delete button</string>
+    <string name="osc_button_deleted">Virtual button deleted</string>
     <string name="title_checkbox_vibrate_osc">Enable vibration</string>
     <string name="summary_checkbox_vibrate_osc">Vibrates your device to emulate rumble for the on-screen controls</string>
     <string name="title_only_l3r3">Only show L3 and R3</string>

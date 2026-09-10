@@ -150,9 +150,15 @@
     <string name="onscreen_input_mode_gamepad">標準手把</string>
     <string name="osc_mode_move">移動控制項目</string>
     <string name="osc_mode_resize">調整控制項目大小</string>
-    <string name="osc_mode_bind">點選控制項目以變更按鍵映射</string>
+    <string name="osc_mode_bind">點按鍵可映射或刪除；按＋新增按鍵</string>
     <string name="osc_mode_active">已儲存配置</string>
     <string name="osc_binding_title">選擇 %1$s 的輸入</string>
+    <string name="osc_binding_save">儲存組合鍵</string>
+    <string name="osc_binding_required">請至少選擇一個輸入</string>
+    <string name="osc_configure_controls">設定虛擬按鍵</string>
+    <string name="osc_add_button">新增虛擬按鍵</string>
+    <string name="osc_delete_button">刪除按鍵</string>
+    <string name="osc_button_deleted">已刪除虛擬按鍵</string>
     <string name="title_checkbox_vibrate_osc"> 啟用震動 </string>
     <string name="summary_checkbox_vibrate_osc">使用螢幕控制按鈕時震動裝置以仿真遊戲低頻音</string>
     <string name="title_only_l3r3">僅顯示 L3 和 R3</string>

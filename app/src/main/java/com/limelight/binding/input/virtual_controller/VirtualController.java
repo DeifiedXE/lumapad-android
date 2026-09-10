@@ -20,7 +20,9 @@ import com.limelight.binding.input.evdev.EvdevListener;
 import com.limelight.preferences.PreferenceConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VirtualController {
     public static class ControllerInputContext {
@@ -62,8 +64,12 @@ public class VirtualController {
     ControllerInputContext inputContext = new ControllerInputContext();
 
     private Button buttonConfigure = null;
+    private Button buttonAdd = null;
 
     private List<VirtualControllerElement> elements = new ArrayList<>();
+    private final Map<Integer, Integer> mappedKeyboardRefCounts = new HashMap<>();
+    private final Map<Integer, Integer> mappedMouseRefCounts = new HashMap<>();
+    private int opacity = 100;
 
     public VirtualController(final ControllerHandler controllerHandler, final EvdevListener inputSink,
                              FrameLayout layout, final Context context, String profileId,
@@ -82,6 +88,7 @@ public class VirtualController {
         buttonConfigure.setAlpha(0.25f);
         buttonConfigure.setFocusable(false);
         buttonConfigure.setBackgroundResource(R.drawable.ic_settings);
+        buttonConfigure.setContentDescription(context.getString(R.string.osc_configure_controls));
         buttonConfigure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,12 +116,21 @@ public class VirtualController {
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                 buttonConfigure.invalidate();
+                updateAddButtonVisibility();
 
                 for (VirtualControllerElement element : elements) {
                     element.invalidate();
                 }
             }
         });
+
+        buttonAdd = new Button(context);
+        buttonAdd.setAlpha(0.55f);
+        buttonAdd.setFocusable(false);
+        buttonAdd.setText("+");
+        buttonAdd.setContentDescription(context.getString(R.string.osc_add_button));
+        buttonAdd.setVisibility(View.GONE);
+        buttonAdd.setOnClickListener(v -> addMappedButton());
 
     }
 
@@ -124,6 +140,48 @@ public class VirtualController {
 
     EvdevListener getInputSink() {
         return inputSink;
+    }
+
+    void mappedKeyboardEvent(int keyCode, boolean down) {
+        updateMappedInputRefCount(mappedKeyboardRefCounts, keyCode, down, true);
+    }
+
+    void mappedMouseButtonEvent(int buttonCode, boolean down) {
+        updateMappedInputRefCount(mappedMouseRefCounts, buttonCode, down, false);
+    }
+
+    private void updateMappedInputRefCount(Map<Integer, Integer> refCounts, int code,
+                                           boolean down, boolean keyboard) {
+        if (inputSink == null) {
+            return;
+        }
+
+        int oldCount = refCounts.containsKey(code) ? refCounts.get(code) : 0;
+        if (down) {
+            refCounts.put(code, oldCount + 1);
+            if (oldCount == 0) {
+                if (keyboard) {
+                    inputSink.keyboardEvent(true, (short) code);
+                }
+                else {
+                    inputSink.mouseButtonEvent(code, true);
+                }
+            }
+        }
+        else if (oldCount > 0) {
+            if (oldCount == 1) {
+                refCounts.remove(code);
+                if (keyboard) {
+                    inputSink.keyboardEvent(false, (short) code);
+                }
+                else {
+                    inputSink.mouseButtonEvent(code, false);
+                }
+            }
+            else {
+                refCounts.put(code, oldCount - 1);
+            }
+        }
     }
 
     String getProfilePreferenceName() {
@@ -141,6 +199,7 @@ public class VirtualController {
         }
 
         buttonConfigure.setVisibility(View.INVISIBLE);
+        buttonAdd.setVisibility(View.INVISIBLE);
     }
 
     public void show() {
@@ -149,6 +208,7 @@ public class VirtualController {
         }
 
         buttonConfigure.setVisibility(View.VISIBLE);
+        updateAddButtonVisibility();
     }
 
     public void removeElements() {
@@ -159,9 +219,11 @@ public class VirtualController {
         elements.clear();
 
         frame_layout.removeView(buttonConfigure);
+        frame_layout.removeView(buttonAdd);
     }
 
     public void setOpacity(int opacity) {
+        this.opacity = opacity;
         for (VirtualControllerElement element : elements) {
             element.setOpacity(opacity);
         }
@@ -174,10 +236,69 @@ public class VirtualController {
         layoutParams.setMargins(x, y, 0, 0);
 
         frame_layout.addView(element, layoutParams);
+        element.setOpacity(opacity);
     }
 
     public List<VirtualControllerElement> getElements() {
         return elements;
+    }
+
+    void removeMappedButtons() {
+        List<VirtualControllerElement> mappedButtons = new ArrayList<>();
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof MappedInputButton) {
+                mappedButtons.add(element);
+            }
+        }
+
+        for (VirtualControllerElement element : mappedButtons) {
+            element.releaseInput();
+            frame_layout.removeView(element);
+            elements.remove(element);
+        }
+    }
+
+    void removeMappedButton(MappedInputButton button) {
+        if (!elements.remove(button)) {
+            return;
+        }
+
+        button.releaseInput();
+        frame_layout.removeView(button);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_button_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    private void addMappedButton() {
+        if (!isKeyboardMouseMode()) {
+            return;
+        }
+
+        int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
+        int mappedButtonCount = 0;
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof MappedInputButton) {
+                mappedButtonCount++;
+                elementId = Math.max(elementId, element.elementId + 1);
+            }
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int buttonSize = (int) (screen.heightPixels * 0.13f);
+        int cascade = (mappedButtonCount % 5) * (buttonSize / 5);
+        int x = Math.max(0, (screen.widthPixels - buttonSize) / 2 + cascade);
+        int y = Math.max(0, (screen.heightPixels - buttonSize) / 2 + cascade);
+
+        MappedInputButton button = new MappedInputButton(this, elementId, 10,
+                "key_space", context);
+        addElement(button, x, y, buttonSize, buttonSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        button.showBindingDialog();
+    }
+
+    private void updateAddButtonVisibility() {
+        buttonAdd.setVisibility(isKeyboardMouseMode() &&
+                currentMode == ControllerMode.BindButtons ? View.VISIBLE : View.GONE);
     }
 
     private static final void _DBG(String text) {
@@ -196,6 +317,12 @@ public class VirtualController {
         params.leftMargin = 15;
         params.topMargin = 15;
         frame_layout.addView(buttonConfigure, params);
+
+        FrameLayout.LayoutParams addParams = new FrameLayout.LayoutParams(buttonSize, buttonSize);
+        addParams.leftMargin = 15 + buttonSize + 8;
+        addParams.topMargin = 15;
+        frame_layout.addView(buttonAdd, addParams);
+        updateAddButtonVisibility();
 
         // Start with the default layout
         VirtualControllerConfigurationLoader.createDefaultLayout(this, context);

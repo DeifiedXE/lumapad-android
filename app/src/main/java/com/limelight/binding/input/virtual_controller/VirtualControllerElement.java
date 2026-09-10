@@ -49,6 +49,7 @@ public abstract class VirtualControllerElement extends View {
     public static final int EID_MAPPED_3 = 118;
     public static final int EID_MAPPED_4 = 119;
     public static final int EID_MAPPED_5 = 120;
+    public static final int EID_MAPPED_CUSTOM_START = 1000;
 
     protected VirtualController virtualController;
     protected final int elementId;
