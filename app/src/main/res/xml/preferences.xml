@@ -152,6 +152,14 @@
             android:key="checkbox_show_onscreen_controls"
             android:summary="@string/summary_checkbox_show_onscreen_controls"
             android:title="@string/title_checkbox_show_onscreen_controls" />
+        <ListPreference
+            android:defaultValue="keyboard_mouse"
+            android:dependency="checkbox_show_onscreen_controls"
+            android:entries="@array/onscreen_input_mode_names"
+            android:entryValues="@array/onscreen_input_mode_values"
+            android:key="list_onscreen_input_mode"
+            android:summary="@string/summary_onscreen_input_mode"
+            android:title="@string/title_onscreen_input_mode" />
         <CheckBoxPreference
             android:key="checkbox_vibrate_osc"
             android:dependency="checkbox_show_onscreen_controls"

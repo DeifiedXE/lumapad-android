@@ -137,4 +137,13 @@
         <item>right</item>
         <item>left</item>
     </string-array>
+
+    <string-array name="onscreen_input_mode_names">
+        <item>@string/onscreen_input_mode_keyboard_mouse</item>
+        <item>@string/onscreen_input_mode_gamepad</item>
+    </string-array>
+    <string-array name="onscreen_input_mode_values" translatable="false">
+        <item>keyboard_mouse</item>
+        <item>gamepad</item>
+    </string-array>
 </resources>

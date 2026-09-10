@@ -205,6 +205,15 @@
     <string name="category_on_screen_controls_settings">On-screen Controls Settings</string>
     <string name="title_checkbox_show_onscreen_controls">Show on-screen controls</string>
     <string name="summary_checkbox_show_onscreen_controls">Show virtual controller overlay on touchscreen</string>
+    <string name="title_onscreen_input_mode">Touch control type</string>
+    <string name="summary_onscreen_input_mode">Keyboard + mouse works with games that do not support controllers</string>
+    <string name="onscreen_input_mode_keyboard_mouse">Keyboard + mouse (mixed sticks)</string>
+    <string name="onscreen_input_mode_gamepad">Standard gamepad</string>
+    <string name="osc_mode_move">Move controls</string>
+    <string name="osc_mode_resize">Resize controls</string>
+    <string name="osc_mode_bind">Tap a control to change its binding</string>
+    <string name="osc_mode_active">Layout saved</string>
+    <string name="osc_binding_title">Choose input for %1$s</string>
     <string name="title_checkbox_vibrate_osc">Enable vibration</string>
     <string name="summary_checkbox_vibrate_osc">Vibrates your device to emulate rumble for the on-screen controls</string>
     <string name="title_only_l3r3">Only show L3 and R3</string>

@@ -11,8 +11,8 @@ android {
         minSdk 21
         targetSdk 36
 
-        versionName "12.1"
-        versionCode = 314
+        versionName "0.1.0"
+        versionCode = 1
 
         // Generate native debug symbols to allow Google Play to symbolicate our native crashes
         ndk.debugSymbolLevel = 'FULL'
@@ -37,7 +37,7 @@ android {
                 }
             }
 
-            applicationId "com.limelight.root"
+            applicationId "app.lumapad.stream.root"
             dimension "root"
             buildConfigField "boolean", "ROOT_BUILD", "true"
         }
@@ -49,7 +49,7 @@ android {
                 }
             }
 
-            applicationId "com.limelight"
+            applicationId "app.lumapad.stream"
             dimension "root"
             buildConfigField "boolean", "ROOT_BUILD", "false"
         }
@@ -84,8 +84,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            resValue "string", "app_label", "Moonlight (Debug)"
-            resValue "string", "app_label_root", "Moonlight (Root Debug)"
+            resValue "string", "app_label", "LumaPad (Debug)"
+            resValue "string", "app_label_root", "LumaPad (Root Debug)"
         }
         release {
             // To whomever is releasing/using an APK in release mode with
@@ -119,8 +119,8 @@ android {
             //
             // TL;DR: Leave the following line alone!
             applicationIdSuffix ".unofficial"
-            resValue "string", "app_label", "Moonlight"
-            resValue "string", "app_label_root", "Moonlight (Root)"
+            resValue "string", "app_label", "LumaPad"
+            resValue "string", "app_label_root", "LumaPad (Root)"
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

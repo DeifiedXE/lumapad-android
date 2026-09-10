@@ -36,6 +36,19 @@ public abstract class VirtualControllerElement extends View {
     public static final int EID_LSB = 14;
     public static final int EID_RSB = 15;
     public static final int EID_GDB = 16;
+    public static final int EID_KEYBOARD_LS = 100;
+    public static final int EID_MOUSE_RS = 101;
+    public static final int EID_MAPPED_LMB = 110;
+    public static final int EID_MAPPED_RMB = 111;
+    public static final int EID_MAPPED_Q = 112;
+    public static final int EID_MAPPED_W = 113;
+    public static final int EID_MAPPED_E = 114;
+    public static final int EID_MAPPED_R = 115;
+    public static final int EID_MAPPED_1 = 116;
+    public static final int EID_MAPPED_2 = 117;
+    public static final int EID_MAPPED_3 = 118;
+    public static final int EID_MAPPED_4 = 119;
+    public static final int EID_MAPPED_5 = 120;
 
     protected VirtualController virtualController;
     protected final int elementId;
@@ -46,6 +59,7 @@ public abstract class VirtualControllerElement extends View {
     protected int pressedColor = 0xF00000FF;
     private int configMoveColor = 0xF0FF0000;
     private int configResizeColor = 0xF0FF00FF;
+    private int configBindColor = 0xF000D7FF;
     private int configSelectedColor = 0xF000FF00;
 
     protected int startSize_x;
@@ -162,8 +176,23 @@ public abstract class VirtualControllerElement extends View {
             return configMoveColor;
         else if (virtualController.getControllerMode() == VirtualController.ControllerMode.ResizeButtons)
             return configResizeColor;
+        else if (virtualController.getControllerMode() == VirtualController.ControllerMode.BindButtons)
+            return configBindColor;
         else
             return normalColor;
+    }
+
+    /** Returns true when this element exposes a user-selectable input binding. */
+    protected boolean isBindingConfigurable() {
+        return false;
+    }
+
+    /** Opens the element-specific input binding chooser. */
+    protected void showBindingDialog() {
+    }
+
+    /** Releases any keyboard, mouse, or controller state held by this element. */
+    public void releaseInput() {
     }
 
     protected int getDefaultStrokeWidth() {
@@ -235,6 +264,13 @@ public abstract class VirtualControllerElement extends View {
 
         if (virtualController.getControllerMode() == VirtualController.ControllerMode.Active) {
             return onElementTouchEvent(event);
+        }
+
+        if (virtualController.getControllerMode() == VirtualController.ControllerMode.BindButtons) {
+            if (event.getActionMasked() == MotionEvent.ACTION_UP && isBindingConfigurable()) {
+                showBindingDialog();
+            }
+            return true;
         }
 
         switch (event.getActionMasked()) {

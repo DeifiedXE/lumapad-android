@@ -154,6 +154,15 @@ public class VirtualControllerConfigurationLoader {
         return new RightAnalogStick(controller, context);
     }
 
+    private static MappedInputButton createMappedButton(
+            final int elementId,
+            final String bindingId,
+            final int layer,
+            final VirtualController controller,
+            final Context context) {
+        return new MappedInputButton(controller, elementId, layer, bindingId, context);
+    }
+
 
     private static final int TRIGGER_L_BASE_X = 1;
     private static final int TRIGGER_R_BASE_X = 92;
@@ -190,6 +199,11 @@ public class VirtualControllerConfigurationLoader {
     private static final int GUIDE_Y = START_BACK_Y;
 
     public static void createDefaultLayout(final VirtualController controller, final Context context) {
+
+        if (controller.isKeyboardMouseMode()) {
+            createKeyboardMouseLayout(controller, context);
+            return;
+        }
 
         DisplayMetrics screen = context.getResources().getDisplayMetrics();
         PreferenceConfiguration config = PreferenceConfiguration.readPreferences(context);
@@ -350,9 +364,75 @@ public class VirtualControllerConfigurationLoader {
         controller.setOpacity(config.oscOpacity);
     }
 
+    /**
+     * LumaPad's default layout for PC games without native controller support.
+     * The left stick emits WASD, the right stick emits relative mouse movement,
+     * and every round button can be rebound while streaming.
+     */
+    private static void createKeyboardMouseLayout(final VirtualController controller,
+                                                   final Context context) {
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        PreferenceConfiguration config = PreferenceConfiguration.readPreferences(context);
+        int rightDisplacement = screen.widthPixels - screen.heightPixels * 16 / 9;
+        int height = screen.heightPixels;
+
+        controller.addElement(new KeyboardAnalogStick(controller, context,
+                        VirtualControllerElement.EID_KEYBOARD_LS),
+                screenScale(3, height), screenScale(37, height),
+                screenScale(32, height), screenScale(32, height));
+
+        controller.addElement(new MouseAnalogStick(controller, context,
+                        VirtualControllerElement.EID_MOUSE_RS),
+                screenScale(93, height) + rightDisplacement, screenScale(38, height),
+                screenScale(31, height), screenScale(31, height));
+
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_LMB,
+                "mouse_left", 92, 27, 14, 9, rightDisplacement);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_RMB,
+                "mouse_right", 109, 27, 14, 9, rightDisplacement);
+
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_Q,
+                "key_q", 70, 15, 10, 10, rightDisplacement);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_W,
+                "key_w", 82, 15, 10, 10, rightDisplacement);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_E,
+                "key_e", 94, 15, 10, 10, rightDisplacement);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_R,
+                "key_r", 106, 15, 10, 10, rightDisplacement);
+
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_1,
+                "key_1", 38, 2, 9, 9, 0);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_2,
+                "key_2", 49, 2, 9, 9, 0);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_3,
+                "key_3", 60, 2, 9, 9, 0);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_4,
+                "key_4", 71, 2, 9, 9, 0);
+        addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_5,
+                "key_5", 82, 2, 9, 9, 0);
+
+        controller.setOpacity(config.oscOpacity);
+    }
+
+    private static void addMappedButton(final VirtualController controller,
+                                        final Context context,
+                                        int elementId,
+                                        String bindingId,
+                                        int x, int y, int width, int height,
+                                        int xDisplacement) {
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int screenHeight = screen.heightPixels;
+        controller.addElement(createMappedButton(elementId, bindingId, 10, controller, context),
+                screenScale(x, screenHeight) + xDisplacement,
+                screenScale(y, screenHeight),
+                screenScale(width, screenHeight),
+                screenScale(height, screenHeight));
+    }
+
     public static void saveProfile(final VirtualController controller,
                                    final Context context) {
-        SharedPreferences.Editor prefEditor = context.getSharedPreferences(OSC_PREFERENCE, Activity.MODE_PRIVATE).edit();
+        SharedPreferences.Editor prefEditor = context.getSharedPreferences(
+                controller.getProfilePreferenceName(), Activity.MODE_PRIVATE).edit();
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;
@@ -367,7 +447,8 @@ public class VirtualControllerConfigurationLoader {
     }
 
     public static void loadFromPreferences(final VirtualController controller, final Context context) {
-        SharedPreferences pref = context.getSharedPreferences(OSC_PREFERENCE, Activity.MODE_PRIVATE);
+        SharedPreferences pref = context.getSharedPreferences(
+                controller.getProfilePreferenceName(), Activity.MODE_PRIVATE);
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;

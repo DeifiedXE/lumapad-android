@@ -144,6 +144,15 @@
     <string name="category_on_screen_controls_settings">螢幕控制按鈕設定</string>
     <string name="title_checkbox_show_onscreen_controls">顯示螢幕控制按鈕</string>
     <string name="summary_checkbox_show_onscreen_controls">在觸控式螢幕上顯示一層虛擬控制器</string>
+    <string name="title_onscreen_input_mode">觸控輸入類型</string>
+    <string name="summary_onscreen_input_mode">鍵盤＋滑鼠模式可用於不支援手把的遊戲</string>
+    <string name="onscreen_input_mode_keyboard_mouse">鍵盤＋滑鼠（混合搖桿）</string>
+    <string name="onscreen_input_mode_gamepad">標準手把</string>
+    <string name="osc_mode_move">移動控制項目</string>
+    <string name="osc_mode_resize">調整控制項目大小</string>
+    <string name="osc_mode_bind">點選控制項目以變更按鍵映射</string>
+    <string name="osc_mode_active">已儲存配置</string>
+    <string name="osc_binding_title">選擇 %1$s 的輸入</string>
     <string name="title_checkbox_vibrate_osc"> 啟用震動 </string>
     <string name="summary_checkbox_vibrate_osc">使用螢幕控制按鈕時震動裝置以仿真遊戲低頻音</string>
     <string name="title_only_l3r3">僅顯示 L3 和 R3</string>

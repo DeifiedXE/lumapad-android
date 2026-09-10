@@ -431,7 +431,8 @@ public class Game extends Activity implements SurfaceHolder.Callback,
             // of gamepads removed and replugged at runtime.
             gamepadMask = 1;
         }
-        if (prefConfig.onscreenController) {
+        if (prefConfig.onscreenController &&
+                PreferenceConfiguration.ONSCREEN_INPUT_MODE_GAMEPAD.equals(prefConfig.onscreenInputMode)) {
             // If we're using OSC, always set at least gamepad 1.
             gamepadMask |= 1;
         }
@@ -506,9 +507,9 @@ public class Game extends Activity implements SurfaceHolder.Callback,
 
         if (prefConfig.onscreenController) {
             // create virtual onscreen controller
-            virtualController = new VirtualController(controllerHandler,
+            virtualController = new VirtualController(controllerHandler, this,
                     (FrameLayout)streamView.getParent(),
-                    this);
+                    this, appName, prefConfig.onscreenInputMode);
             virtualController.refreshLayout();
             virtualController.show();
         }

@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.limelight.LimeLog;
 import com.limelight.R;
 import com.limelight.binding.input.ControllerHandler;
+import com.limelight.binding.input.evdev.EvdevListener;
+import com.limelight.preferences.PreferenceConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +36,18 @@ public class VirtualController {
     public enum ControllerMode {
         Active,
         MoveButtons,
-        ResizeButtons
+        ResizeButtons,
+        BindButtons
     }
 
     private static final boolean _PRINT_DEBUG_INFORMATION = false;
 
     private final ControllerHandler controllerHandler;
+    private final EvdevListener inputSink;
     private final Context context;
     private final Handler handler;
+    private final String profilePreferenceName;
+    private final String inputMode;
 
     private final Runnable delayedRetransmitRunnable = new Runnable() {
         @Override
@@ -59,11 +65,18 @@ public class VirtualController {
 
     private List<VirtualControllerElement> elements = new ArrayList<>();
 
-    public VirtualController(final ControllerHandler controllerHandler, FrameLayout layout, final Context context) {
+    public VirtualController(final ControllerHandler controllerHandler, final EvdevListener inputSink,
+                             FrameLayout layout, final Context context, String profileId,
+                             String inputMode) {
         this.controllerHandler = controllerHandler;
+        this.inputSink = inputSink;
         this.frame_layout = layout;
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
+        this.inputMode = inputMode;
+        String stableProfileId = profileId == null ? "desktop" : Integer.toHexString(profileId.hashCode());
+        this.profilePreferenceName = VirtualControllerConfigurationLoader.OSC_PREFERENCE +
+                "_v2_" + stableProfileId + "_" + inputMode;
 
         buttonConfigure = new Button(context);
         buttonConfigure.setAlpha(0.25f);
@@ -79,11 +92,18 @@ public class VirtualController {
                     message = "Entering configuration mode (Move buttons)";
                 } else if (currentMode == ControllerMode.MoveButtons) {
                     currentMode = ControllerMode.ResizeButtons;
-                    message = "Entering configuration mode (Resize buttons)";
+                    message = context.getString(R.string.osc_mode_resize);
+                } else if (currentMode == ControllerMode.ResizeButtons) {
+                    currentMode = ControllerMode.BindButtons;
+                    message = context.getString(R.string.osc_mode_bind);
                 } else {
                     currentMode = ControllerMode.Active;
                     VirtualControllerConfigurationLoader.saveProfile(VirtualController.this, context);
-                    message = "Exiting configuration mode";
+                    message = context.getString(R.string.osc_mode_active);
+                }
+
+                if (currentMode == ControllerMode.MoveButtons) {
+                    message = context.getString(R.string.osc_mode_move);
                 }
 
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -102,8 +122,21 @@ public class VirtualController {
         return handler;
     }
 
+    EvdevListener getInputSink() {
+        return inputSink;
+    }
+
+    String getProfilePreferenceName() {
+        return profilePreferenceName;
+    }
+
+    boolean isKeyboardMouseMode() {
+        return PreferenceConfiguration.ONSCREEN_INPUT_MODE_KEYBOARD_MOUSE.equals(inputMode);
+    }
+
     public void hide() {
         for (VirtualControllerElement element : elements) {
+            element.releaseInput();
             element.setVisibility(View.INVISIBLE);
         }
 
@@ -120,6 +153,7 @@ public class VirtualController {
 
     public void removeElements() {
         for (VirtualControllerElement element : elements) {
+            element.releaseInput();
             frame_layout.removeView(element);
         }
         elements.clear();
