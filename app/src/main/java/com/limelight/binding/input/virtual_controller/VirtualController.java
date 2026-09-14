@@ -247,7 +247,7 @@ public class VirtualController {
     void removeMappedButtons() {
         List<VirtualControllerElement> mappedButtons = new ArrayList<>();
         for (VirtualControllerElement element : elements) {
-            if (element instanceof MappedInputButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
                 mappedButtons.add(element);
             }
         }
@@ -285,6 +285,17 @@ public class VirtualController {
         Toast.makeText(context, R.string.osc_button_deleted, Toast.LENGTH_SHORT).show();
     }
 
+    void removeDisplaySwitchButton(DisplaySwitchButton button) {
+        if (!elements.remove(button)) {
+            return;
+        }
+
+        button.releaseInput();
+        frame_layout.removeView(button);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_display_switch_deleted, Toast.LENGTH_SHORT).show();
+    }
+
     void removeVirtualStick(VirtualControllerElement stick) {
         if (!(stick instanceof KeyboardAnalogStick) || !elements.remove(stick)) {
             return;
@@ -316,6 +327,15 @@ public class VirtualController {
         return false;
     }
 
+    private boolean hasDisplaySwitchButton() {
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof DisplaySwitchButton) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void showAddControlDialog() {
         if (!isKeyboardMouseMode()) {
             return;
@@ -325,6 +345,10 @@ public class VirtualController {
         List<Integer> choiceTypes = new ArrayList<>();
         choices.add(context.getString(R.string.osc_add_mapped_button));
         choiceTypes.add(0);
+        if (!hasDisplaySwitchButton()) {
+            choices.add(context.getString(R.string.osc_add_display_switch));
+            choiceTypes.add(3);
+        }
         if (!hasElement(VirtualControllerElement.EID_KEYBOARD_LS)) {
             choices.add(context.getString(R.string.osc_add_keyboard_stick));
             choiceTypes.add(1);
@@ -344,6 +368,9 @@ public class VirtualController {
                         case 2:
                             addAimZone();
                             break;
+                        case 3:
+                            addDisplaySwitchButton();
+                            break;
                         default:
                             addMappedButton();
                             break;
@@ -361,7 +388,7 @@ public class VirtualController {
         int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
         int mappedButtonCount = 0;
         for (VirtualControllerElement element : elements) {
-            if (element instanceof MappedInputButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
                 mappedButtonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -375,6 +402,32 @@ public class VirtualController {
 
         MappedInputButton button = new MappedInputButton(this, elementId, 10,
                 "key_space", context);
+        addElement(button, x, y, buttonSize, buttonSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        button.showBindingDialog();
+    }
+
+    private void addDisplaySwitchButton() {
+        if (!isKeyboardMouseMode() || hasDisplaySwitchButton()) {
+            return;
+        }
+
+        int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
+        int buttonCount = 0;
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
+                buttonCount++;
+                elementId = Math.max(elementId, element.elementId + 1);
+            }
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int buttonSize = (int) (screen.heightPixels * 0.13f);
+        int cascade = (buttonCount % 5) * (buttonSize / 5);
+        int x = Math.max(0, (screen.widthPixels - buttonSize) / 2 + cascade);
+        int y = Math.max(0, (screen.heightPixels - buttonSize) / 2 + cascade);
+
+        DisplaySwitchButton button = new DisplaySwitchButton(this, elementId, 10, context);
         addElement(button, x, y, buttonSize, buttonSize);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         button.showBindingDialog();

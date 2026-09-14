@@ -229,6 +229,7 @@
     <string name="osc_add_mapped_button">Button</string>
     <string name="osc_add_keyboard_stick">Keyboard movement stick</string>
     <string name="osc_add_aim_zone">Free-swipe aim area</string>
+    <string name="osc_add_display_switch">Switch streaming monitor</string>
     <string name="osc_delete_button">Delete button</string>
     <string name="osc_button_deleted">Virtual button deleted</string>
     <string name="osc_edit_keyboard_stick">Edit keyboard stick</string>
@@ -249,6 +250,14 @@
     <string name="osc_done">Done</string>
     <string name="osc_delete_aim_zone">Delete aim area</string>
     <string name="osc_aim_zone_deleted">Aim area deleted</string>
+    <string name="osc_display_switch_label">MON %1$d↔%2$d</string>
+    <string name="osc_edit_display_switch">Edit monitor switch button</string>
+    <string name="osc_display_switch_summary">Uses Sunshine’s Ctrl+Alt+Shift+F1–F12 shortcuts. The first press switches from the starting monitor to the other monitor, then each press toggles between them.</string>
+    <string name="osc_display_switch_start">Monitor active at stream start</string>
+    <string name="osc_display_switch_other">Other monitor</string>
+    <string name="osc_display_switch_distinct">Choose two different monitors</string>
+    <string name="osc_delete_display_switch">Delete monitor button</string>
+    <string name="osc_display_switch_deleted">Monitor switch button deleted</string>
     <string name="title_checkbox_vibrate_osc">Enable vibration</string>
     <string name="summary_checkbox_vibrate_osc">Vibrates your device to emulate rumble for the on-screen controls</string>
     <string name="title_only_l3r3">Only show L3 and R3</string>

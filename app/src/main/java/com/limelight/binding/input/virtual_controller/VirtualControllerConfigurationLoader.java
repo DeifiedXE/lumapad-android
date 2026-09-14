@@ -414,6 +414,11 @@ public class VirtualControllerConfigurationLoader {
         addMappedButton(controller, context, VirtualControllerElement.EID_MAPPED_5,
                 "key_5", 82, 2, 9, 9, 0);
 
+        controller.addElement(new DisplaySwitchButton(controller,
+                        VirtualControllerElement.EID_DISPLAY_SWITCH, 10, context),
+                screenScale(94, height), screenScale(2, height),
+                screenScale(12, height), screenScale(9, height));
+
         controller.setOpacity(config.oscOpacity);
     }
 
@@ -445,7 +450,7 @@ public class VirtualControllerConfigurationLoader {
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;
-            if (element instanceof MappedInputButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
                 mappedButtonIds.put(element.elementId);
             }
             else if (element instanceof KeyboardAnalogStick || element instanceof MouseAimZone) {
@@ -542,9 +547,16 @@ public class VirtualControllerConfigurationLoader {
 
                     try {
                         JSONObject configuration = new JSONObject(jsonConfig);
-                        String bindingId = configuration.optString("BINDING", "key_space");
-                        controller.addElement(createMappedButton(elementId, bindingId, 10,
-                                        controller, context),
+                        VirtualControllerElement button;
+                        if (configuration.optBoolean("DISPLAY_SWITCH", false)) {
+                            button = new DisplaySwitchButton(controller, elementId, 10, context);
+                        }
+                        else {
+                            String bindingId = configuration.optString("BINDING", "key_space");
+                            button = createMappedButton(elementId, bindingId, 10,
+                                    controller, context);
+                        }
+                        controller.addElement(button,
                                 configuration.optInt("LEFT", (screen.widthPixels - defaultSize) / 2),
                                 configuration.optInt("TOP", (screen.heightPixels - defaultSize) / 2),
                                 configuration.optInt("WIDTH", defaultSize),

@@ -38,6 +38,7 @@ public abstract class VirtualControllerElement extends View {
     public static final int EID_GDB = 16;
     public static final int EID_KEYBOARD_LS = 100;
     public static final int EID_MOUSE_RS = 101;
+    public static final int EID_DISPLAY_SWITCH = 102;
     public static final int EID_MAPPED_LMB = 110;
     public static final int EID_MAPPED_RMB = 111;
     public static final int EID_MAPPED_Q = 112;

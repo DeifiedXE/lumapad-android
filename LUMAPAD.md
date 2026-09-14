@@ -15,6 +15,8 @@ Sunshine host; no LumaPad-specific Windows service is required.
   left/right Ctrl, Shift, Alt, and Windows modifier keys.
 - Binding editor: a full-screen PC keyboard for visual key selection, with the original list
   selector retained as an option under On-screen Controls settings.
+- Monitor switch button: toggles between two configurable Sunshine capture outputs (monitors 1
+  and 2 by default) using Sunshine's built-in Ctrl+Alt+Shift+F1-F12 shortcuts.
 - Profiles: saved separately for each streamed application and input mode.
 - Physical gamepads: continue to pass through using Moonlight's existing controller path.
 
@@ -28,6 +30,9 @@ touch-held input to **RMB** for games that aim while the right mouse button is h
 The binding interface defaults to **Full-screen PC keyboard**. Change **Button mapping interface**
 to **Original list selector** in the On-screen Controls settings if a compact scrolling list is
 preferred. Both interfaces expose the complete key set and keep left/right modifiers separate.
+The monitor switch is included in new/default layouts. For an existing saved layout, enter binding
+mode and choose **+ > Switch streaming monitor**; tap the button while in binding mode to change
+the two monitor numbers or delete it.
 
 The default mapping is aimed at action RPGs such as Path of Exile: mouse buttons, Q/W/E/R, and
 1-5 are immediately available, while the left stick provides WASD movement for games that support

@@ -168,6 +168,7 @@
     <string name="osc_add_mapped_button">按鍵</string>
     <string name="osc_add_keyboard_stick">鍵盤移動搖桿</string>
     <string name="osc_add_aim_zone">自由滑動瞄準區</string>
+    <string name="osc_add_display_switch">切換串流螢幕</string>
     <string name="osc_delete_button">刪除按鍵</string>
     <string name="osc_button_deleted">已刪除虛擬按鍵</string>
     <string name="osc_edit_keyboard_stick">編輯鍵盤搖桿</string>
@@ -188,6 +189,14 @@
     <string name="osc_done">完成</string>
     <string name="osc_delete_aim_zone">刪除瞄準區</string>
     <string name="osc_aim_zone_deleted">已刪除瞄準區</string>
+    <string name="osc_display_switch_label">螢幕 %1$d↔%2$d</string>
+    <string name="osc_edit_display_switch">編輯螢幕切換按鈕</string>
+    <string name="osc_display_switch_summary">使用 Sunshine 的 Ctrl+Alt+Shift+F1～F12 快捷鍵。第一次按會從起始螢幕切到另一個螢幕，之後每次按下都會在兩者間切換。</string>
+    <string name="osc_display_switch_start">串流開始時的螢幕</string>
+    <string name="osc_display_switch_other">另一個螢幕</string>
+    <string name="osc_display_switch_distinct">請選擇兩個不同的螢幕</string>
+    <string name="osc_delete_display_switch">刪除切換螢幕按鈕</string>
+    <string name="osc_display_switch_deleted">已刪除螢幕切換按鈕</string>
     <string name="title_checkbox_vibrate_osc"> 啟用震動 </string>
     <string name="summary_checkbox_vibrate_osc">使用螢幕控制按鈕時震動裝置以仿真遊戲低頻音</string>
     <string name="title_only_l3r3">僅顯示 L3 和 R3</string>
