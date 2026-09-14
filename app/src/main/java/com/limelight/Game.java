@@ -674,38 +674,31 @@ public class Game extends Activity implements SurfaceHolder.Callback,
     }
 
     public void setMetaKeyCaptureState(boolean enabled) {
-        // Android has native keyboard capture support starting in API 36.1
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA && Build.VERSION.SDK_INT_FULL >= Build.VERSION_CODES_FULL.BAKLAVA_1) {
-            WindowManager.LayoutParams windowLayoutParams = getWindow().getAttributes();
-            windowLayoutParams.setKeyboardCaptureEnabled(enabled);
-            getWindow().setAttributes(windowLayoutParams);
-        }
-        else {
-            // This uses custom APIs present on some Samsung devices to allow capture of
-            // meta key events while streaming.
-            try {
-                Class<?> semWindowManager = Class.forName("com.samsung.android.view.SemWindowManager");
-                Method getInstanceMethod = semWindowManager.getMethod("getInstance");
-                Object manager = getInstanceMethod.invoke(null);
+        // Android 16.1's native keyboard-capture API displays a system-managed Esc reminder
+        // over the stream. There is no API to suppress only that overlay, so LumaPad keeps the
+        // established Samsung Meta-key path and leaves native keyboard capture disabled.
+        try {
+            Class<?> semWindowManager = Class.forName("com.samsung.android.view.SemWindowManager");
+            Method getInstanceMethod = semWindowManager.getMethod("getInstance");
+            Object manager = getInstanceMethod.invoke(null);
 
-                if (manager != null) {
-                    Class<?>[] parameterTypes = new Class<?>[2];
-                    parameterTypes[0] = ComponentName.class;
-                    parameterTypes[1] = boolean.class;
-                    Method requestMetaKeyEventMethod = semWindowManager.getDeclaredMethod("requestMetaKeyEvent", parameterTypes);
-                    requestMetaKeyEventMethod.invoke(manager, this.getComponentName(), enabled);
-                }
-                else {
-                    LimeLog.warning("SemWindowManager.getInstance() returned null");
-                }
-            } catch (ClassNotFoundException ignored) {
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            if (manager != null) {
+                Class<?>[] parameterTypes = new Class<?>[2];
+                parameterTypes[0] = ComponentName.class;
+                parameterTypes[1] = boolean.class;
+                Method requestMetaKeyEventMethod = semWindowManager.getDeclaredMethod("requestMetaKeyEvent", parameterTypes);
+                requestMetaKeyEventMethod.invoke(manager, this.getComponentName(), enabled);
             }
+            else {
+                LimeLog.warning("SemWindowManager.getInstance() returned null");
+            }
+        } catch (ClassNotFoundException ignored) {
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
