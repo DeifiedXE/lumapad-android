@@ -26,11 +26,15 @@ LumaPad 是一款非官方的 Moonlight Android 分支，專為需要觸控鍵�
 
 ## Quick start / 快速開始
 
+### English
+
 1. Install and configure [Sunshine](https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2getting__started.html)
    on the gaming PC. If regular Moonlight already connects, this step is complete.
 2. Download and install the LumaPad APK from [Releases](https://github.com/DeifiedXE/lumapad-android/releases/latest).
 3. Pair LumaPad with Sunshine, then enable **Settings > On-screen Controls Settings > Show
    on-screen controls** and set **Touch control type** to **Keyboard + mouse (mixed sticks)**.
+
+### 繁體中文
 
 1. 在遊戲電腦安裝並設定 [Sunshine](https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2getting__started.html)；
    如果原版 Moonlight 已能連線，這一步已完成。
