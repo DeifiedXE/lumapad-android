@@ -22,6 +22,8 @@ public class RelativeTouchContext implements TouchContext {
     private double xFactor, yFactor;
     private int pointerCount;
     private int maxPointerCountInGesture;
+    private float gestureMouseSensitivity = 1f;
+    private boolean gesturePrimaryClickEnabled = true;
 
     private final NvConnection conn;
     private final int actionIndex;
@@ -45,6 +47,9 @@ public class RelativeTouchContext implements TouchContext {
             }
 
             // We haven't been cancelled before the timer expired so begin dragging
+            if (actionIndex == 0 && !gesturePrimaryClickEnabled) {
+                return;
+            }
             confirmedDrag = true;
             conn.sendMouseButtonDown(getMouseButtonIndex());
         }
@@ -161,6 +166,20 @@ public class RelativeTouchContext implements TouchContext {
             cancelled = confirmedDrag = confirmedMove = confirmedScroll = false;
             distanceMoved = 0;
 
+            boolean useBlankAreaMode = prefConfig.onscreenController &&
+                    PreferenceConfiguration.ONSCREEN_INPUT_MODE_KEYBOARD_MOUSE.equals(
+                            prefConfig.onscreenInputMode);
+            if (actionIndex == 0 && useBlankAreaMode) {
+                BlankAreaInputSettings.State settings =
+                        BlankAreaInputSettings.readActive(targetView.getContext());
+                gestureMouseSensitivity = settings.sensitivity;
+                gesturePrimaryClickEnabled = settings.allowLeftClick;
+            }
+            else {
+                gestureMouseSensitivity = 1f;
+                gesturePrimaryClickEnabled = true;
+            }
+
             if (actionIndex == 0) {
                 // Start the timer for engaging a drag
                 startDragTimer();
@@ -186,7 +205,8 @@ public class RelativeTouchContext implements TouchContext {
             // Raise the button after a drag
             conn.sendMouseButtonUp(buttonIndex);
         }
-        else if (isTap(eventTime))
+        else if (isTap(eventTime) &&
+                (buttonIndex != MouseButtonPacket.BUTTON_LEFT || gesturePrimaryClickEnabled))
         {
             // Lower the mouse button
             conn.sendMouseButtonDown(buttonIndex);
@@ -256,8 +276,7 @@ public class RelativeTouchContext implements TouchContext {
 
                 // Touches on OSC elements are consumed by those views, so the touch context only
                 // sees uncovered stream areas. Keep two-finger scrolling at its original speed.
-                double pointerSensitivity = prefConfig.onscreenController && pointerCount != 2 ?
-                        prefConfig.onscreenBackgroundMouseSensitivity : 1.0;
+                double pointerSensitivity = pointerCount != 2 ? gestureMouseSensitivity : 1.0;
 
                 // Scale the deltas based on the factors passed to our constructor and the
                 // user-selected sensitivity for uncovered on-screen-control areas.

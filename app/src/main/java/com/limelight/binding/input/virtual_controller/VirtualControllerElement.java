@@ -40,6 +40,7 @@ public abstract class VirtualControllerElement extends View {
     public static final int EID_MOUSE_RS = 101;
     public static final int EID_DISPLAY_SWITCH = 102;
     public static final int EID_RADIAL_MENU = 103;
+    public static final int EID_BLANK_AREA_MODE = 104;
     public static final int EID_MAPPED_LMB = 110;
     public static final int EID_MAPPED_RMB = 111;
     public static final int EID_MAPPED_Q = 112;

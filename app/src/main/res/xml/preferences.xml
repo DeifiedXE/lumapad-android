@@ -168,17 +168,6 @@
             android:key="list_onscreen_binding_editor"
             android:summary="@string/summary_onscreen_binding_editor"
             android:title="@string/title_onscreen_binding_editor" />
-        <com.limelight.preferences.SeekBarPreference
-            android:key="seekbar_osc_background_mouse_sensitivity"
-            android:dependency="checkbox_show_onscreen_controls"
-            android:dialogMessage="@string/summary_osc_background_mouse_sensitivity"
-            seekbar:min="25"
-            seekbar:step="5"
-            android:max="300"
-            android:defaultValue="100"
-            android:summary="@string/summary_osc_background_mouse_sensitivity"
-            android:text="@string/suffix_osc_opacity"
-            android:title="@string/title_osc_background_mouse_sensitivity" />
         <CheckBoxPreference
             android:key="checkbox_vibrate_osc"
             android:dependency="checkbox_show_onscreen_controls"

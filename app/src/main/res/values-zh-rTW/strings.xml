@@ -152,8 +152,6 @@
     <string name="summary_onscreen_binding_editor">選擇滿版 PC 鍵盤或原本的清單式選擇器</string>
     <string name="onscreen_binding_editor_keyboard">滿版 PC 鍵盤</string>
     <string name="onscreen_binding_editor_list">原本的清單式選擇器</string>
-    <string name="title_osc_background_mouse_sensitivity">空白區域滑動靈敏度</string>
-    <string name="summary_osc_background_mouse_sensitivity">調整觸控板模式下，在未被虛擬控制元件覆蓋的串流畫面滑動時的滑鼠速度；不影響瞄準區自己的靈敏度。</string>
     <string name="osc_mode_move">移動控制項目</string>
     <string name="osc_mode_resize">調整控制項目大小</string>
     <string name="osc_mode_bind">點按鍵或搖桿可編輯／刪除；按＋新增</string>
@@ -172,6 +170,7 @@
     <string name="osc_add_aim_zone">自由滑動瞄準區</string>
     <string name="osc_add_display_switch">切換串流螢幕</string>
     <string name="osc_add_radial_menu">輻射快捷輪盤</string>
+    <string name="osc_add_blank_mode_button">滑鼠／射擊模式切換</string>
     <string name="osc_delete_button">刪除按鍵</string>
     <string name="osc_button_deleted">已刪除虛擬按鍵</string>
     <string name="osc_edit_keyboard_stick">編輯鍵盤搖桿</string>
@@ -213,6 +212,20 @@
     <string name="osc_radial_add_sector">新增扇區</string>
     <string name="osc_delete_radial_menu">刪除輪盤</string>
     <string name="osc_radial_deleted">已刪除輻射快捷輪盤</string>
+    <string name="osc_blank_mode_mouse_label">滑鼠</string>
+    <string name="osc_blank_mode_shooting_label">射擊</string>
+    <string name="osc_blank_mode_mouse">滑鼠模式</string>
+    <string name="osc_blank_mode_shooting">射擊模式</string>
+    <string name="osc_blank_mode_button_description">空白區域輸入模式：%1$s</string>
+    <string name="osc_edit_blank_mode_button">編輯滑鼠／射擊模式切換</string>
+    <string name="osc_blank_mode_summary">遊玩時點一下即可切換兩套空白區域設定，也能同時送出按鍵或組合鍵。例如綁定 Tab 後，可用一次點擊開啟背包並進入滑鼠模式。</string>
+    <string name="osc_blank_mode_binding">切換時同時送出的按鍵或組合鍵（選填）</string>
+    <string name="osc_blank_mode_binding_title">選擇模式切換輸入</string>
+    <string name="osc_blank_mode_sensitivity">%1$s靈敏度：%2$d%%</string>
+    <string name="osc_blank_mode_allow_left_click">允許空白區域送出滑鼠左鍵與長按拖曳</string>
+    <string name="osc_blank_mode_switched">已切換至%1$s</string>
+    <string name="osc_delete_blank_mode_button">刪除模式切換按鈕</string>
+    <string name="osc_blank_mode_deleted">已刪除滑鼠／射擊模式切換按鈕</string>
     <string name="osc_profile_default">預設配置</string>
     <string name="osc_profile_imported">匯入的配置</string>
     <string name="osc_profile_button_description">控制配置：%1$s</string>

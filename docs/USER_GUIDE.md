@@ -80,8 +80,8 @@ The default layout includes:
 - Round shortcuts: mouse buttons, Q/W/E/R, and number keys 1–5.
 - Radial shortcut menu: less frequently used keyboard or mouse inputs.
 - Stream-display switch: switches between displays 1 and 2 by default.
-- Uncovered video area: retains Moonlight's regular touchpad behavior with independently adjustable
-  mouse sensitivity.
+- Uncovered video area: uses a button to switch between separately configured mouse and shooting
+  modes.
 
 ## 6. Move, resize, and configure controls
 
@@ -102,6 +102,7 @@ In **binding mode**, press `+` to add:
 
 - A general virtual button
 - A radial shortcut menu
+- A mouse/shooting mode switch
 - A keyboard movement stick
 - A free-swipe aim area
 - A stream-display switch button
@@ -135,16 +136,23 @@ For games that aim while the right mouse button is held, set the touch-held inpu
 right button remains down while your finger is on the aim area, mouse movement follows your swipe,
 and the button is released when your finger lifts.
 
-### Adjust uncovered-area swipe sensitivity
+### Switch uncovered areas between mouse and shooting modes
 
-Open:
+The **MOUSE/SHOOT** button on the stream shows the active mode. Tap it once to switch. In binding
+mode, tap this button to configure:
 
-**Settings > On-screen Controls Settings > Blank-area swipe sensitivity**
+- Uncovered-area sensitivity and left-click/long-press-drag behavior for **Mouse mode**.
+- Uncovered-area sensitivity and left-click/long-press-drag behavior for **Shooting mode**.
+- An optional key or combination sent whenever the mode changes.
 
-This adjusts the mouse speed produced by trackpad swipes on stream areas that are not covered by a
-button, stick, or aim area. The range is 25%–300%, with 100% as the default. It does not change the
-aim area's own sensitivity or two-finger scrolling speed. **Use the touchscreen as a trackpad** must
-be enabled, and the new value is applied when the next stream starts.
+For example, while shooting mode is active, bind `Tab` to the switch. One tap sends Tab to open the
+inventory and enters mouse mode; another tap sends Tab to close it and returns to shooting mode.
+Both sensitivity controls range from 25%–300%.
+
+The left-click option applies only to uncovered stream areas. It does not change a separate virtual
+left button, the aim area's sensitivity, or two-finger scrolling. **Use the touchscreen as a
+trackpad** must be enabled. If the switch is deleted, restore it with
+`+ > Mouse/shooting mode switch`.
 
 ## 9. Use a radial shortcut menu
 

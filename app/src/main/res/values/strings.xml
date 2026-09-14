@@ -213,8 +213,6 @@
     <string name="summary_onscreen_binding_editor">Choose the full-screen PC keyboard or the original list selector</string>
     <string name="onscreen_binding_editor_keyboard">Full-screen PC keyboard</string>
     <string name="onscreen_binding_editor_list">Original list selector</string>
-    <string name="title_osc_background_mouse_sensitivity">Blank-area swipe sensitivity</string>
-    <string name="summary_osc_background_mouse_sensitivity">Adjust cursor speed when swiping uncovered stream areas in trackpad mode. This does not change the aim area’s sensitivity.</string>
     <string name="osc_mode_move">Move controls</string>
     <string name="osc_mode_resize">Resize controls</string>
     <string name="osc_mode_bind">Tap a button or stick to edit/delete it; use + to add one</string>
@@ -233,6 +231,7 @@
     <string name="osc_add_aim_zone">Free-swipe aim area</string>
     <string name="osc_add_display_switch">Switch streaming monitor</string>
     <string name="osc_add_radial_menu">Radial shortcut menu</string>
+    <string name="osc_add_blank_mode_button">Mouse/shooting mode switch</string>
     <string name="osc_delete_button">Delete button</string>
     <string name="osc_button_deleted">Virtual button deleted</string>
     <string name="osc_edit_keyboard_stick">Edit keyboard stick</string>
@@ -274,6 +273,20 @@
     <string name="osc_radial_add_sector">Add sector</string>
     <string name="osc_delete_radial_menu">Delete radial menu</string>
     <string name="osc_radial_deleted">Radial menu deleted</string>
+    <string name="osc_blank_mode_mouse_label">MOUSE</string>
+    <string name="osc_blank_mode_shooting_label">SHOOT</string>
+    <string name="osc_blank_mode_mouse">Mouse mode</string>
+    <string name="osc_blank_mode_shooting">Shooting mode</string>
+    <string name="osc_blank_mode_button_description">Blank-area input mode: %1$s</string>
+    <string name="osc_edit_blank_mode_button">Edit mouse/shooting mode switch</string>
+    <string name="osc_blank_mode_summary">Tap this button during play to switch between two blank-area configurations. You can optionally send a key or combination at the same time—for example, Tab can open the inventory and enter mouse mode with one tap.</string>
+    <string name="osc_blank_mode_binding">Key or combination sent when switching (optional)</string>
+    <string name="osc_blank_mode_binding_title">Choose mode-switch inputs</string>
+    <string name="osc_blank_mode_sensitivity">%1$s sensitivity: %2$d%%</string>
+    <string name="osc_blank_mode_allow_left_click">Allow blank-area left click and long-press drag</string>
+    <string name="osc_blank_mode_switched">Switched to %1$s</string>
+    <string name="osc_delete_blank_mode_button">Delete mode switch</string>
+    <string name="osc_blank_mode_deleted">Mouse/shooting mode switch deleted</string>
     <string name="osc_profile_default">Default</string>
     <string name="osc_profile_imported">Imported layout</string>
     <string name="osc_profile_button_description">Control profile: %1$s</string>

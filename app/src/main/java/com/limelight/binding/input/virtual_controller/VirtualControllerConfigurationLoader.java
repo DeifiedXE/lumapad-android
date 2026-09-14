@@ -20,6 +20,8 @@ public class VirtualControllerConfigurationLoader {
     public static final String OSC_PREFERENCE = "OSC";
     private static final String MAPPED_BUTTON_IDS = "MAPPED_BUTTON_IDS";
     private static final String STICK_IDS = "STICK_IDS";
+    private static final String BLANK_AREA_MODE_BUTTON_MIGRATED =
+            "BLANK_AREA_MODE_BUTTON_MIGRATED_V1";
 
     private static int getPercent(
             int percent,
@@ -419,12 +421,26 @@ public class VirtualControllerConfigurationLoader {
                 screenScale(94, height), screenScale(2, height),
                 screenScale(12, height), screenScale(9, height));
 
+        addDefaultBlankAreaModeButton(controller, context);
+
         controller.addElement(new RadialMenuButton(controller,
                         VirtualControllerElement.EID_RADIAL_MENU, context),
                 screenScale(54, height), screenScale(31, height),
                 screenScale(10, height), screenScale(10, height));
 
         controller.setOpacity(config.oscOpacity);
+    }
+
+    private static void addDefaultBlankAreaModeButton(final VirtualController controller,
+                                                       final Context context) {
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int rightDisplacement = screen.widthPixels - screen.heightPixels * 16 / 9;
+        controller.addElement(new BlankAreaModeButton(controller,
+                        VirtualControllerElement.EID_BLANK_AREA_MODE, 10, context),
+                screenScale(108, screen.heightPixels) + rightDisplacement,
+                screenScale(2, screen.heightPixels),
+                screenScale(16, screen.heightPixels),
+                screenScale(9, screen.heightPixels));
     }
 
     private static void addMappedButton(final VirtualController controller,
@@ -456,7 +472,8 @@ public class VirtualControllerConfigurationLoader {
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;
             if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
-                    element instanceof RadialMenuButton) {
+                    element instanceof RadialMenuButton ||
+                    element instanceof BlankAreaModeButton) {
                 mappedButtonIds.put(element.elementId);
             }
             else if (element instanceof KeyboardAnalogStick || element instanceof MouseAimZone) {
@@ -472,6 +489,7 @@ public class VirtualControllerConfigurationLoader {
         if (controller.isKeyboardMouseMode()) {
             prefEditor.putString(MAPPED_BUTTON_IDS, mappedButtonIds.toString());
             prefEditor.putString(STICK_IDS, stickIds.toString());
+            prefEditor.putBoolean(BLANK_AREA_MODE_BUTTON_MIGRATED, true);
         }
 
         prefEditor.apply();
@@ -536,6 +554,7 @@ public class VirtualControllerConfigurationLoader {
             }
         }
 
+        boolean migratedBlankAreaModeButton = false;
         String savedMappedButtonIds = pref.getString(MAPPED_BUTTON_IDS, null);
         if (controller.isKeyboardMouseMode() && savedMappedButtonIds != null) {
             try {
@@ -554,7 +573,10 @@ public class VirtualControllerConfigurationLoader {
                     try {
                         JSONObject configuration = new JSONObject(jsonConfig);
                         VirtualControllerElement button;
-                        if (configuration.optBoolean("RADIAL_MENU", false)) {
+                        if (configuration.optBoolean("BLANK_AREA_MODE_BUTTON", false)) {
+                            button = new BlankAreaModeButton(controller, elementId, 10, context);
+                        }
+                        else if (configuration.optBoolean("RADIAL_MENU", false)) {
                             button = new RadialMenuButton(controller, elementId, context);
                         }
                         else if (configuration.optBoolean("DISPLAY_SWITCH", false)) {
@@ -575,6 +597,14 @@ public class VirtualControllerConfigurationLoader {
                         // Skip only the corrupt button while preserving the rest of the profile.
                         pref.edit().remove(Integer.toString(elementId)).apply();
                     }
+                }
+
+                // Add the new mode switch once to profiles created before LumaPad v0.9. Users can
+                // delete it normally after the migrated profile has been saved.
+                if (!pref.getBoolean(BLANK_AREA_MODE_BUTTON_MIGRATED, false) &&
+                        !controller.hasBlankAreaModeButton()) {
+                    addDefaultBlankAreaModeButton(controller, context);
+                    migratedBlankAreaModeButton = true;
                 }
             }
             catch (JSONException e) {
@@ -597,6 +627,11 @@ public class VirtualControllerConfigurationLoader {
                     pref.edit().remove(prefKey).apply();
                 }
             }
+        }
+
+        controller.syncBlankAreaInputSettings();
+        if (migratedBlankAreaModeButton) {
+            saveProfile(controller, context);
         }
     }
 }

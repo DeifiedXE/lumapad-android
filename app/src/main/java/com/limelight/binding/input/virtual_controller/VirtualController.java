@@ -404,7 +404,8 @@ public class VirtualController {
         List<VirtualControllerElement> mappedButtons = new ArrayList<>();
         for (VirtualControllerElement element : elements) {
             if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
-                    element instanceof RadialMenuButton) {
+                    element instanceof RadialMenuButton ||
+                    element instanceof BlankAreaModeButton) {
                 mappedButtons.add(element);
             }
         }
@@ -464,6 +465,17 @@ public class VirtualController {
         Toast.makeText(context, R.string.osc_radial_deleted, Toast.LENGTH_SHORT).show();
     }
 
+    void removeBlankAreaModeButton(BlankAreaModeButton button) {
+        if (!elements.remove(button)) {
+            return;
+        }
+
+        button.releaseInput();
+        frame_layout.removeView(button);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_blank_mode_deleted, Toast.LENGTH_SHORT).show();
+    }
+
     void removeVirtualStick(VirtualControllerElement stick) {
         if (!(stick instanceof KeyboardAnalogStick) || !elements.remove(stick)) {
             return;
@@ -504,6 +516,24 @@ public class VirtualController {
         return false;
     }
 
+    boolean hasBlankAreaModeButton() {
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof BlankAreaModeButton) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void syncBlankAreaInputSettings() {
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof BlankAreaModeButton) {
+                ((BlankAreaModeButton) element).applyActiveSettings();
+                return;
+            }
+        }
+    }
+
     private void showAddControlDialog() {
         if (!isKeyboardMouseMode()) {
             return;
@@ -516,6 +546,10 @@ public class VirtualController {
         if (!hasDisplaySwitchButton()) {
             choices.add(context.getString(R.string.osc_add_display_switch));
             choiceTypes.add(3);
+        }
+        if (!hasBlankAreaModeButton()) {
+            choices.add(context.getString(R.string.osc_add_blank_mode_button));
+            choiceTypes.add(5);
         }
         choices.add(context.getString(R.string.osc_add_radial_menu));
         choiceTypes.add(4);
@@ -544,6 +578,9 @@ public class VirtualController {
                         case 4:
                             addRadialMenuButton();
                             break;
+                        case 5:
+                            addBlankAreaModeButton();
+                            break;
                         default:
                             addMappedButton();
                             break;
@@ -562,7 +599,8 @@ public class VirtualController {
         int mappedButtonCount = 0;
         for (VirtualControllerElement element : elements) {
             if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
-                    element instanceof RadialMenuButton) {
+                    element instanceof RadialMenuButton ||
+                    element instanceof BlankAreaModeButton) {
                 mappedButtonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -590,7 +628,8 @@ public class VirtualController {
         int buttonCount = 0;
         for (VirtualControllerElement element : elements) {
             if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
-                    element instanceof RadialMenuButton) {
+                    element instanceof RadialMenuButton ||
+                    element instanceof BlankAreaModeButton) {
                 buttonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -617,7 +656,8 @@ public class VirtualController {
         int buttonCount = 0;
         for (VirtualControllerElement element : elements) {
             if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
-                    element instanceof RadialMenuButton) {
+                    element instanceof RadialMenuButton ||
+                    element instanceof BlankAreaModeButton) {
                 buttonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -631,6 +671,23 @@ public class VirtualController {
 
         RadialMenuButton button = new RadialMenuButton(this, elementId, context);
         addElement(button, x, y, buttonSize, buttonSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        button.showBindingDialog();
+    }
+
+    private void addBlankAreaModeButton() {
+        if (!isKeyboardMouseMode() || hasBlankAreaModeButton()) {
+            return;
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int buttonSize = (int) (screen.heightPixels * 0.13f);
+        BlankAreaModeButton button = new BlankAreaModeButton(this,
+                VirtualControllerElement.EID_BLANK_AREA_MODE, 10, context);
+        addElement(button, Math.max(0, (screen.widthPixels - buttonSize) / 2),
+                Math.max(0, (screen.heightPixels - buttonSize) / 2),
+                buttonSize, buttonSize);
+        button.applyActiveSettings();
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         button.showBindingDialog();
     }
