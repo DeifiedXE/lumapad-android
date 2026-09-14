@@ -213,6 +213,8 @@
     <string name="summary_onscreen_binding_editor">Choose the full-screen PC keyboard or the original list selector</string>
     <string name="onscreen_binding_editor_keyboard">Full-screen PC keyboard</string>
     <string name="onscreen_binding_editor_list">Original list selector</string>
+    <string name="title_osc_background_mouse_sensitivity">Blank-area swipe sensitivity</string>
+    <string name="summary_osc_background_mouse_sensitivity">Adjust cursor speed when swiping uncovered stream areas in trackpad mode. This does not change the aim area’s sensitivity.</string>
     <string name="osc_mode_move">Move controls</string>
     <string name="osc_mode_resize">Resize controls</string>
     <string name="osc_mode_bind">Tap a button or stick to edit/delete it; use + to add one</string>

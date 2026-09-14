@@ -13,7 +13,8 @@ Sunshine host; no LumaPad-specific Windows service is required.
 - Left virtual stick: four independently bindable keyboard directions (WASD by default).
 - Right-side aim area: direct relative-mouse swiping with adjustable sensitivity, optional axis
   inversion, and a configurable input combination held for as long as the area is touched.
-- Uncovered video area: Moonlight's normal relative mouse trackpad.
+- Uncovered video area: Moonlight's normal relative mouse trackpad with an independent adjustable
+  sensitivity setting that does not affect the aim area.
 - Round buttons: addable, removable, and bindable to one input or a multi-key combination of
   mouse buttons, alphanumeric and function keys, navigation keys, numpad keys, and distinct
   left/right Ctrl, Shift, Alt, and Windows modifier keys.

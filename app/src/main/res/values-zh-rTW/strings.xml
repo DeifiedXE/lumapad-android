@@ -152,6 +152,8 @@
     <string name="summary_onscreen_binding_editor">選擇滿版 PC 鍵盤或原本的清單式選擇器</string>
     <string name="onscreen_binding_editor_keyboard">滿版 PC 鍵盤</string>
     <string name="onscreen_binding_editor_list">原本的清單式選擇器</string>
+    <string name="title_osc_background_mouse_sensitivity">空白區域滑動靈敏度</string>
+    <string name="summary_osc_background_mouse_sensitivity">調整觸控板模式下，在未被虛擬控制元件覆蓋的串流畫面滑動時的滑鼠速度；不影響瞄準區自己的靈敏度。</string>
     <string name="osc_mode_move">移動控制項目</string>
     <string name="osc_mode_resize">調整控制項目大小</string>
     <string name="osc_mode_bind">點按鍵或搖桿可編輯／刪除；按＋新增</string>

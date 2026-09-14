@@ -45,6 +45,8 @@ public class PreferenceConfiguration {
     private static final String ONSCREEN_CONTROLLER_PREF_STRING = "checkbox_show_onscreen_controls";
     private static final String ONSCREEN_INPUT_MODE_PREF_STRING = "list_onscreen_input_mode";
     private static final String ONSCREEN_BINDING_EDITOR_PREF_STRING = "list_onscreen_binding_editor";
+    private static final String ONSCREEN_BACKGROUND_MOUSE_SENSITIVITY_PREF_STRING =
+            "seekbar_osc_background_mouse_sensitivity";
     private static final String ONLY_L3_R3_PREF_STRING = "checkbox_only_show_L3R3";
     private static final String SHOW_GUIDE_BUTTON_PREF_STRING = "checkbox_show_guide_button";
     private static final String LEGACY_DISABLE_FRAME_DROP_PREF_STRING = "checkbox_disable_frame_drop";
@@ -91,6 +93,7 @@ public class PreferenceConfiguration {
     public static final String ONSCREEN_BINDING_EDITOR_KEYBOARD = "full_keyboard";
     public static final String ONSCREEN_BINDING_EDITOR_LIST = "list";
     private static final String DEFAULT_ONSCREEN_BINDING_EDITOR = ONSCREEN_BINDING_EDITOR_KEYBOARD;
+    private static final int DEFAULT_ONSCREEN_BACKGROUND_MOUSE_SENSITIVITY = 100;
     private static final boolean ONLY_L3_R3_DEFAULT = false;
     private static final boolean SHOW_GUIDE_BUTTON_DEFAULT = true;
     private static final boolean DEFAULT_ENABLE_HDR = false;
@@ -141,6 +144,7 @@ public class PreferenceConfiguration {
     public boolean onscreenController;
     public String onscreenInputMode;
     public String onscreenBindingEditor;
+    public float onscreenBackgroundMouseSensitivity;
     public boolean onlyL3R3;
     public boolean showGuideButton;
     public boolean enableHdr;
@@ -592,6 +596,11 @@ public class PreferenceConfiguration {
         config.onscreenInputMode = prefs.getString(ONSCREEN_INPUT_MODE_PREF_STRING, DEFAULT_ONSCREEN_INPUT_MODE);
         config.onscreenBindingEditor = prefs.getString(ONSCREEN_BINDING_EDITOR_PREF_STRING,
                 DEFAULT_ONSCREEN_BINDING_EDITOR);
+        int backgroundMouseSensitivity = prefs.getInt(
+                ONSCREEN_BACKGROUND_MOUSE_SENSITIVITY_PREF_STRING,
+                DEFAULT_ONSCREEN_BACKGROUND_MOUSE_SENSITIVITY);
+        config.onscreenBackgroundMouseSensitivity = Math.max(25,
+                Math.min(300, backgroundMouseSensitivity)) / 100f;
         config.onlyL3R3 = prefs.getBoolean(ONLY_L3_R3_PREF_STRING, ONLY_L3_R3_DEFAULT);
         config.showGuideButton = prefs.getBoolean(SHOW_GUIDE_BUTTON_PREF_STRING, SHOW_GUIDE_BUTTON_DEFAULT);
         config.enableHdr = prefs.getBoolean(ENABLE_HDR_PREF_STRING, DEFAULT_ENABLE_HDR) && !isShieldAtvFirmwareWithBrokenHdr();

@@ -80,7 +80,8 @@ The default layout includes:
 - Round shortcuts: mouse buttons, Q/W/E/R, and number keys 1–5.
 - Radial shortcut menu: less frequently used keyboard or mouse inputs.
 - Stream-display switch: switches between displays 1 and 2 by default.
-- Uncovered video area: retains Moonlight's regular touchpad behavior.
+- Uncovered video area: retains Moonlight's regular touchpad behavior with independently adjustable
+  mouse sensitivity.
 
 ## 6. Move, resize, and configure controls
 
@@ -133,6 +134,17 @@ Tap the right-side aim area in binding mode to configure:
 For games that aim while the right mouse button is held, set the touch-held input to **RMB**. The
 right button remains down while your finger is on the aim area, mouse movement follows your swipe,
 and the button is released when your finger lifts.
+
+### Adjust uncovered-area swipe sensitivity
+
+Open:
+
+**Settings > On-screen Controls Settings > Blank-area swipe sensitivity**
+
+This adjusts the mouse speed produced by trackpad swipes on stream areas that are not covered by a
+button, stick, or aim area. The range is 25%–300%, with 100% as the default. It does not change the
+aim area's own sensitivity or two-finger scrolling speed. **Use the touchscreen as a trackpad** must
+be enabled, and the new value is applied when the next stream starts.
 
 ## 9. Use a radial shortcut menu
 

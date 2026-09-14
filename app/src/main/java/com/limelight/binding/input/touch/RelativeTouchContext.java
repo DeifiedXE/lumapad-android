@@ -254,9 +254,17 @@ public class RelativeTouchContext implements TouchContext {
                 int deltaX = eventX - lastTouchX;
                 int deltaY = eventY - lastTouchY;
 
-                // Scale the deltas based on the factors passed to our constructor
-                deltaX = (int) Math.round((double) Math.abs(deltaX) * xFactor);
-                deltaY = (int) Math.round((double) Math.abs(deltaY) * yFactor);
+                // Touches on OSC elements are consumed by those views, so the touch context only
+                // sees uncovered stream areas. Keep two-finger scrolling at its original speed.
+                double pointerSensitivity = prefConfig.onscreenController && pointerCount != 2 ?
+                        prefConfig.onscreenBackgroundMouseSensitivity : 1.0;
+
+                // Scale the deltas based on the factors passed to our constructor and the
+                // user-selected sensitivity for uncovered on-screen-control areas.
+                deltaX = (int) Math.round((double) Math.abs(deltaX) * xFactor *
+                        pointerSensitivity);
+                deltaY = (int) Math.round((double) Math.abs(deltaY) * yFactor *
+                        pointerSensitivity);
 
                 // Fix up the signs
                 if (eventX < lastTouchX) {

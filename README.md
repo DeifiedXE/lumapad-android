@@ -21,6 +21,7 @@ LumaPad 是一款非官方的 Moonlight Android 分支，專為需要觸控鍵�
 - Addable, removable, and fully rebindable buttons / 可新增、刪除及自由綁定的虛擬按鍵
 - Full-screen PC keyboard or classic list binding editor / 滿版 PC 鍵盤或傳統清單式設定
 - Free-swipe mouse aiming area with a touch-held binding / 可附帶按鍵的自由滑動滑鼠瞄準區
+- Adjustable mouse sensitivity for uncovered stream areas / 可調整空白串流區域的滑鼠靈敏度
 - Configurable radial shortcut menus / 可自訂的輻射快捷輪盤
 - Sunshine monitor switching button / Sunshine 串流螢幕切換按鈕
 
