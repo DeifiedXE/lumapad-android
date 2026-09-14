@@ -17,7 +17,12 @@ Sunshine host; no LumaPad-specific Windows service is required.
   selector retained as an option under On-screen Controls settings.
 - Monitor switch button: toggles between two configurable Sunshine capture outputs (monitors 1
   and 2 by default) using Sunshine's built-in Ctrl+Alt+Shift+F1-F12 shortcuts.
-- Profiles: saved separately for each streamed application and input mode.
+- Radial shortcut menus: hold a compact button to open 2-12 configurable sectors, drag to select,
+  and release to trigger. Center dead zone, sector-switching hysteresis, selection haptics, and
+  release/hold activation are configurable per wheel.
+- Profiles: named layouts are selected manually during streaming and shared across launched apps,
+  avoiding unreliable Steam/Desktop app-name detection. Profiles can be cloned, renamed, switched,
+  or deleted, and existing automatic profiles are imported on first use.
 - Physical gamepads: continue to pass through using Moonlight's existing controller path.
 
 Enable **Settings > On-screen Controls > Show on-screen controls**, then select
@@ -33,6 +38,9 @@ preferred. Both interfaces expose the complete key set and keep left/right modif
 The monitor switch is included in new/default layouts. For an existing saved layout, enter binding
 mode and choose **+ > Switch streaming monitor**; tap the button while in binding mode to change
 the two monitor numbers or delete it.
+Use the named profile button beside the settings gear to switch complete layouts at any time. A new
+profile begins as a copy of the current layout. Add more radial menus from
+**binding mode > + > Radial shortcut menu**.
 
 The default mapping is aimed at action RPGs such as Path of Exile: mouse buttons, Q/W/E/R, and
 1-5 are immediately available, while the left stick provides WASD movement for games that support

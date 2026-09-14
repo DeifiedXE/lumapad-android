@@ -8,9 +8,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -49,7 +51,8 @@ public class VirtualController {
     private final EvdevListener inputSink;
     private final Context context;
     private final Handler handler;
-    private final String profilePreferenceName;
+    private final ControlProfileManager profileManager;
+    private String profilePreferenceName;
     private final String inputMode;
 
     private final Runnable delayedRetransmitRunnable = new Runnable() {
@@ -66,6 +69,7 @@ public class VirtualController {
 
     private Button buttonConfigure = null;
     private Button buttonAdd = null;
+    private Button buttonProfile = null;
 
     private List<VirtualControllerElement> elements = new ArrayList<>();
     private final Map<Integer, Integer> mappedKeyboardRefCounts = new HashMap<>();
@@ -81,9 +85,8 @@ public class VirtualController {
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
         this.inputMode = inputMode;
-        String stableProfileId = profileId == null ? "desktop" : Integer.toHexString(profileId.hashCode());
-        this.profilePreferenceName = VirtualControllerConfigurationLoader.OSC_PREFERENCE +
-                "_v2_" + stableProfileId + "_" + inputMode;
+        this.profileManager = new ControlProfileManager(context, inputMode, profileId);
+        this.profilePreferenceName = profileManager.getCurrentPreferenceName();
 
         buttonConfigure = new Button(context);
         buttonConfigure.setAlpha(0.25f);
@@ -132,6 +135,14 @@ public class VirtualController {
         buttonAdd.setContentDescription(context.getString(R.string.osc_add_control));
         buttonAdd.setVisibility(View.GONE);
         buttonAdd.setOnClickListener(v -> showAddControlDialog());
+
+        buttonProfile = new Button(context);
+        buttonProfile.setAlpha(0.55f);
+        buttonProfile.setFocusable(false);
+        buttonProfile.setAllCaps(false);
+        buttonProfile.setTextSize(10);
+        updateProfileButtonLabel();
+        buttonProfile.setOnClickListener(v -> showProfileDialog());
 
     }
 
@@ -189,6 +200,148 @@ public class VirtualController {
         return profilePreferenceName;
     }
 
+    private void updateProfileButtonLabel() {
+        String name = profileManager.getCurrentProfile().name;
+        String shortName = name.length() <= 8 ? name : name.substring(0, 7) + "…";
+        buttonProfile.setText(shortName);
+        buttonProfile.setContentDescription(context.getString(
+                R.string.osc_profile_button_description, name));
+    }
+
+    private void showProfileDialog() {
+        List<ControlProfileManager.Profile> profiles = profileManager.getProfiles();
+        CharSequence[] choices = new CharSequence[profiles.size() + 3];
+        for (int i = 0; i < profiles.size(); i++) {
+            ControlProfileManager.Profile profile = profiles.get(i);
+            choices[i] = (profileManager.isCurrent(profile.id) ? "✓ " : "") + profile.name;
+        }
+        choices[profiles.size()] = context.getString(R.string.osc_profile_new);
+        choices[profiles.size() + 1] = context.getString(R.string.osc_profile_rename);
+        choices[profiles.size() + 2] = context.getString(R.string.osc_profile_delete);
+
+        new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.osc_profile_title,
+                        profileManager.getCurrentProfile().name))
+                .setItems(choices, (dialog, which) -> {
+                    if (which < profiles.size()) {
+                        switchProfile(profiles.get(which));
+                    }
+                    else if (which == profiles.size()) {
+                        showCreateProfileDialog();
+                    }
+                    else if (which == profiles.size() + 1) {
+                        showRenameProfileDialog();
+                    }
+                    else {
+                        showDeleteProfileDialog();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void switchProfile(ControlProfileManager.Profile profile) {
+        if (profileManager.isCurrent(profile.id)) return;
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        profileManager.setCurrent(profile.id);
+        profilePreferenceName = profileManager.getCurrentPreferenceName();
+        currentMode = ControllerMode.Active;
+        refreshLayout();
+        Toast.makeText(context, context.getString(R.string.osc_profile_switched, profile.name),
+                Toast.LENGTH_SHORT).show();
+    }
+
+    private interface ProfileNameListener {
+        void onNameAccepted(String name);
+    }
+
+    private void showProfileNameDialog(int titleResource, String initialName,
+                                       String exceptProfileId, ProfileNameListener listener) {
+        EditText nameInput = new EditText(context);
+        nameInput.setSingleLine(true);
+        nameInput.setInputType(InputType.TYPE_CLASS_TEXT |
+                InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        nameInput.setText(initialName);
+        nameInput.setSelectAllOnFocus(true);
+        int padding = Math.round(20 * context.getResources().getDisplayMetrics().density);
+        FrameLayout inputContainer = new FrameLayout(context);
+        inputContainer.setPadding(padding, 0, padding, 0);
+        inputContainer.addView(nameInput);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(titleResource)
+                .setView(inputContainer)
+                .setPositiveButton(R.string.osc_save, null)
+                .setNegativeButton(android.R.string.cancel, null);
+        if (titleResource == R.string.osc_profile_new_title) {
+            builder.setMessage(R.string.osc_profile_new_summary);
+        }
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(view -> {
+                    String name = nameInput.getText().toString().trim();
+                    if (name.isEmpty()) {
+                        Toast.makeText(context, R.string.osc_profile_name_required,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (profileManager.nameExists(name, exceptProfileId)) {
+                        Toast.makeText(context, R.string.osc_profile_name_duplicate,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    listener.onNameAccepted(name);
+                    dialog.dismiss();
+                }));
+        dialog.show();
+        nameInput.requestFocus();
+    }
+
+    private void showCreateProfileDialog() {
+        showProfileNameDialog(R.string.osc_profile_new_title, "", null, name -> {
+            VirtualControllerConfigurationLoader.saveProfile(this, context);
+            profileManager.createProfile(name, profilePreferenceName);
+            profilePreferenceName = profileManager.getCurrentPreferenceName();
+            currentMode = ControllerMode.Active;
+            refreshLayout();
+            Toast.makeText(context, context.getString(R.string.osc_profile_created, name),
+                    Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void showRenameProfileDialog() {
+        ControlProfileManager.Profile current = profileManager.getCurrentProfile();
+        showProfileNameDialog(R.string.osc_profile_rename_title, current.name, current.id,
+                name -> {
+                    profileManager.renameCurrent(name);
+                    updateProfileButtonLabel();
+                    Toast.makeText(context, R.string.osc_profile_renamed,
+                            Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showDeleteProfileDialog() {
+        if (!profileManager.canDeleteCurrent()) {
+            Toast.makeText(context, R.string.osc_profile_keep_one, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String name = profileManager.getCurrentProfile().name;
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.osc_profile_delete)
+                .setMessage(context.getString(R.string.osc_profile_delete_confirm, name))
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    profileManager.deleteCurrent();
+                    profilePreferenceName = profileManager.getCurrentPreferenceName();
+                    currentMode = ControllerMode.Active;
+                    refreshLayout();
+                    Toast.makeText(context, R.string.osc_profile_deleted,
+                            Toast.LENGTH_SHORT).show();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
     boolean isKeyboardMouseMode() {
         return PreferenceConfiguration.ONSCREEN_INPUT_MODE_KEYBOARD_MOUSE.equals(inputMode);
     }
@@ -201,6 +354,7 @@ public class VirtualController {
 
         buttonConfigure.setVisibility(View.INVISIBLE);
         buttonAdd.setVisibility(View.INVISIBLE);
+        buttonProfile.setVisibility(View.INVISIBLE);
     }
 
     public void show() {
@@ -209,6 +363,7 @@ public class VirtualController {
         }
 
         buttonConfigure.setVisibility(View.VISIBLE);
+        buttonProfile.setVisibility(View.VISIBLE);
         updateAddButtonVisibility();
     }
 
@@ -221,6 +376,7 @@ public class VirtualController {
 
         frame_layout.removeView(buttonConfigure);
         frame_layout.removeView(buttonAdd);
+        frame_layout.removeView(buttonProfile);
     }
 
     public void setOpacity(int opacity) {
@@ -247,7 +403,8 @@ public class VirtualController {
     void removeMappedButtons() {
         List<VirtualControllerElement> mappedButtons = new ArrayList<>();
         for (VirtualControllerElement element : elements) {
-            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
+                    element instanceof RadialMenuButton) {
                 mappedButtons.add(element);
             }
         }
@@ -294,6 +451,17 @@ public class VirtualController {
         frame_layout.removeView(button);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         Toast.makeText(context, R.string.osc_display_switch_deleted, Toast.LENGTH_SHORT).show();
+    }
+
+    void removeRadialMenuButton(RadialMenuButton button) {
+        if (!elements.remove(button)) {
+            return;
+        }
+
+        button.releaseInput();
+        frame_layout.removeView(button);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        Toast.makeText(context, R.string.osc_radial_deleted, Toast.LENGTH_SHORT).show();
     }
 
     void removeVirtualStick(VirtualControllerElement stick) {
@@ -349,6 +517,8 @@ public class VirtualController {
             choices.add(context.getString(R.string.osc_add_display_switch));
             choiceTypes.add(3);
         }
+        choices.add(context.getString(R.string.osc_add_radial_menu));
+        choiceTypes.add(4);
         if (!hasElement(VirtualControllerElement.EID_KEYBOARD_LS)) {
             choices.add(context.getString(R.string.osc_add_keyboard_stick));
             choiceTypes.add(1);
@@ -371,6 +541,9 @@ public class VirtualController {
                         case 3:
                             addDisplaySwitchButton();
                             break;
+                        case 4:
+                            addRadialMenuButton();
+                            break;
                         default:
                             addMappedButton();
                             break;
@@ -388,7 +561,8 @@ public class VirtualController {
         int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
         int mappedButtonCount = 0;
         for (VirtualControllerElement element : elements) {
-            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
+                    element instanceof RadialMenuButton) {
                 mappedButtonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -415,7 +589,8 @@ public class VirtualController {
         int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
         int buttonCount = 0;
         for (VirtualControllerElement element : elements) {
-            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
+                    element instanceof RadialMenuButton) {
                 buttonCount++;
                 elementId = Math.max(elementId, element.elementId + 1);
             }
@@ -428,6 +603,33 @@ public class VirtualController {
         int y = Math.max(0, (screen.heightPixels - buttonSize) / 2 + cascade);
 
         DisplaySwitchButton button = new DisplaySwitchButton(this, elementId, 10, context);
+        addElement(button, x, y, buttonSize, buttonSize);
+        VirtualControllerConfigurationLoader.saveProfile(this, context);
+        button.showBindingDialog();
+    }
+
+    private void addRadialMenuButton() {
+        if (!isKeyboardMouseMode()) {
+            return;
+        }
+
+        int elementId = VirtualControllerElement.EID_MAPPED_CUSTOM_START;
+        int buttonCount = 0;
+        for (VirtualControllerElement element : elements) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
+                    element instanceof RadialMenuButton) {
+                buttonCount++;
+                elementId = Math.max(elementId, element.elementId + 1);
+            }
+        }
+
+        DisplayMetrics screen = context.getResources().getDisplayMetrics();
+        int buttonSize = (int) (screen.heightPixels * 0.13f);
+        int cascade = (buttonCount % 5) * (buttonSize / 5);
+        int x = Math.max(0, (screen.widthPixels - buttonSize) / 2 + cascade);
+        int y = Math.max(0, (screen.heightPixels - buttonSize) / 2 + cascade);
+
+        RadialMenuButton button = new RadialMenuButton(this, elementId, context);
         addElement(button, x, y, buttonSize, buttonSize);
         VirtualControllerConfigurationLoader.saveProfile(this, context);
         button.showBindingDialog();
@@ -487,8 +689,16 @@ public class VirtualController {
         params.topMargin = 15;
         frame_layout.addView(buttonConfigure, params);
 
+        int profileButtonWidth = buttonSize * 2;
+        FrameLayout.LayoutParams profileParams = new FrameLayout.LayoutParams(
+                profileButtonWidth, buttonSize);
+        profileParams.leftMargin = 15 + buttonSize + 8;
+        profileParams.topMargin = 15;
+        frame_layout.addView(buttonProfile, profileParams);
+        updateProfileButtonLabel();
+
         FrameLayout.LayoutParams addParams = new FrameLayout.LayoutParams(buttonSize, buttonSize);
-        addParams.leftMargin = 15 + buttonSize + 8;
+        addParams.leftMargin = profileParams.leftMargin + profileButtonWidth + 8;
         addParams.topMargin = 15;
         frame_layout.addView(buttonAdd, addParams);
         updateAddButtonVisibility();

@@ -419,6 +419,11 @@ public class VirtualControllerConfigurationLoader {
                 screenScale(94, height), screenScale(2, height),
                 screenScale(12, height), screenScale(9, height));
 
+        controller.addElement(new RadialMenuButton(controller,
+                        VirtualControllerElement.EID_RADIAL_MENU, context),
+                screenScale(54, height), screenScale(31, height),
+                screenScale(10, height), screenScale(10, height));
+
         controller.setOpacity(config.oscOpacity);
     }
 
@@ -450,7 +455,8 @@ public class VirtualControllerConfigurationLoader {
 
         for (VirtualControllerElement element : controller.getElements()) {
             String prefKey = ""+element.elementId;
-            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton) {
+            if (element instanceof MappedInputButton || element instanceof DisplaySwitchButton ||
+                    element instanceof RadialMenuButton) {
                 mappedButtonIds.put(element.elementId);
             }
             else if (element instanceof KeyboardAnalogStick || element instanceof MouseAimZone) {
@@ -548,7 +554,10 @@ public class VirtualControllerConfigurationLoader {
                     try {
                         JSONObject configuration = new JSONObject(jsonConfig);
                         VirtualControllerElement button;
-                        if (configuration.optBoolean("DISPLAY_SWITCH", false)) {
+                        if (configuration.optBoolean("RADIAL_MENU", false)) {
+                            button = new RadialMenuButton(controller, elementId, context);
+                        }
+                        else if (configuration.optBoolean("DISPLAY_SWITCH", false)) {
                             button = new DisplaySwitchButton(controller, elementId, 10, context);
                         }
                         else {
