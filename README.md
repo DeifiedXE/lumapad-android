@@ -1,35 +1,49 @@
-# Moonlight Android
+# LumaPad
 
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/232a8tadrrn8jv0k/branch/master?svg=true)](https://ci.appveyor.com/project/cgutman/moonlight-android/branch/master)
-[![Translation Status](https://hosted.weblate.org/widgets/moonlight/-/moonlight-android/svg-badge.svg)](https://hosted.weblate.org/projects/moonlight/moonlight-android/)
+LumaPad is an unofficial Moonlight Android fork designed for PC games that need touch-friendly
+keyboard and mouse controls. It connects directly to a normal Sunshine host; no additional
+LumaPad server is required on Windows.
 
-[Moonlight for Android](https://moonlight-stream.org) is an open source client for NVIDIA GameStream and [Sunshine](https://github.com/LizardByte/Sunshine).
+LumaPad 是一款非官方的 Moonlight Android 分支，專為需要觸控鍵盤、滑鼠操作的 PC 遊戲設計。
+它可直接連線既有的 Sunshine 主機，Windows 不需要另外安裝 LumaPad 專用伺服器。
 
-Moonlight for Android will allow you to stream your full collection of games from your Windows PC to your Android device,
-whether in your own home or over the internet.
+## Download and guides / 下載與教學
 
-Moonlight also has a [PC client](https://github.com/moonlight-stream/moonlight-qt) and [iOS/tvOS client](https://github.com/moonlight-stream/moonlight-ios).
+- [Download the latest APK / 下載最新版 APK](https://github.com/DeifiedXE/lumapad-android/releases/latest)
+- [繁體中文安裝與使用教學](docs/USER_GUIDE.zh-TW.md)
+- [English installation and user guide](docs/USER_GUIDE.md)
+- [Feature and developer notes](LUMAPAD.md)
 
-You can follow development on our [Discord server](https://moonlight-stream.org/discord) and help translate Moonlight into your language on [Weblate](https://hosted.weblate.org/projects/moonlight/moonlight-android/).
+## Highlights / 主要功能
 
-## Downloads
-* [Google Play Store](https://play.google.com/store/apps/details?id=com.limelight)
-* [Amazon App Store](https://www.amazon.com/gp/product/B00JK4MFN2)
-* [F-Droid](https://f-droid.org/packages/com.limelight)
-* [APK](https://github.com/moonlight-stream/moonlight-android/releases)
+- Mixed keyboard and mouse touch controls / 鍵盤與滑鼠混合觸控
+- Manually selected, named control profiles / 可手動切換的命名按鍵配置
+- Addable, removable, and fully rebindable buttons / 可新增、刪除及自由綁定的虛擬按鍵
+- Full-screen PC keyboard or classic list binding editor / 滿版 PC 鍵盤或傳統清單式設定
+- Free-swipe mouse aiming area with a touch-held binding / 可附帶按鍵的自由滑動滑鼠瞄準區
+- Configurable radial shortcut menus / 可自訂的輻射快捷輪盤
+- Sunshine monitor switching button / Sunshine 串流螢幕切換按鈕
+
+## Quick start / 快速開始
+
+1. Install and configure [Sunshine](https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2getting__started.html)
+   on the gaming PC. If regular Moonlight already connects, this step is complete.
+2. Download and install the LumaPad APK from [Releases](https://github.com/DeifiedXE/lumapad-android/releases/latest).
+3. Pair LumaPad with Sunshine, then enable **Settings > On-screen Controls Settings > Show
+   on-screen controls** and set **Touch control type** to **Keyboard + mouse (mixed sticks)**.
+
+1. 在遊戲電腦安裝並設定 [Sunshine](https://docs.lizardbyte.dev/projects/sunshine/latest/md_docs_2getting__started.html)；
+   如果原版 Moonlight 已能連線，這一步已完成。
+2. 從 [Releases](https://github.com/DeifiedXE/lumapad-android/releases/latest) 下載並安裝 LumaPad APK。
+3. 將 LumaPad 與 Sunshine 配對，接著開啟**設定 > 螢幕控制按鈕設定 > 顯示螢幕控制按鈕**，
+   再把**觸控輸入類型**設成**鍵盤＋滑鼠（混合搖桿）**。
 
 ## Building
-* Install Android Studio and the Android NDK
-* Run ‘git submodule update --init --recursive’ from within moonlight-android/
-* In moonlight-android/, create a file called ‘local.properties’. Add an ‘ndk.dir=’ property to the local.properties file and set it equal to your NDK directory.
-* Build the APK using Android Studio or gradle
 
-## Authors
+See [LUMAPAD.md](LUMAPAD.md#build) for the Android SDK, NDK, and Gradle build instructions.
 
-* [Cameron Gutman](https://github.com/cgutman)  
-* [Diego Waxemberg](https://github.com/dwaxemberg)  
-* [Aaron Neyer](https://github.com/Aaronneyer)  
-* [Andrew Hennessy](https://github.com/yetanothername)
+## License and attribution
 
-Moonlight is the work of students at [Case Western](http://case.edu) and was
-started as a project at [MHacks](http://mhacks.org).
+LumaPad is based on [Moonlight Android](https://github.com/moonlight-stream/moonlight-android)
+and moonlight-common-c. It remains licensed under GNU GPL v3; see [LICENSE.txt](LICENSE.txt).
+LumaPad is not an official Moonlight project.

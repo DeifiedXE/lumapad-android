@@ -1,5 +1,9 @@
 # LumaPad
 
+[繁體中文安裝與使用教學](docs/USER_GUIDE.zh-TW.md) ·
+[English installation and user guide](docs/USER_GUIDE.md) ·
+[Download the latest APK](https://github.com/DeifiedXE/lumapad-android/releases/latest)
+
 LumaPad is an Android game-streaming client focused on touch controls for PC games that do not
 support controllers. It uses Moonlight's GameStream client core and connects to an existing
 Sunshine host; no LumaPad-specific Windows service is required.
